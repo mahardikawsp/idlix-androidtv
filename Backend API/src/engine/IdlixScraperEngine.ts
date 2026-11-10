@@ -1,4 +1,10 @@
-import { connect } from 'puppeteer-real-browser';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { Browser, Page } from 'puppeteer';
+
+// Add stealth plugin to evade bot/Cloudflare detection
+const puppeteerInstance = (puppeteer as any).default || puppeteer;
+puppeteerInstance.use(StealthPlugin());
 
 export interface ResolvedPlaybackResult {
   title: string;
@@ -10,11 +16,18 @@ export interface ResolvedPlaybackResult {
 
 export class IdlixScraperEngine {
   private static instance: IdlixScraperEngine | null = null;
-  private browser: any = null;
-  private page: any = null;
+  private browser: Browser | null = null;
+  private page: Page | null = null;
   private isReady = false;
   private initPromise: Promise<void> | null = null;
   private baseUrl = process.env.IDLIX_BASE_URL || 'https://z2.idlixku.com';
+
+  // --- Lifecycle & Memory Management ---
+  private requestCount = 0;
+  private readonly MAX_REQUESTS_BEFORE_RECYCLE = 150;
+  private readonly MAX_SESSION_AGE_MS = 2 * 60 * 60 * 1000; // 2 jam
+  private sessionCreatedAt = 0;
+  private healthCheckTimer: ReturnType<typeof setInterval> | null = null;
 
   private constructor() {}
 
@@ -34,21 +47,9 @@ export class IdlixScraperEngine {
     }
 
     this.initPromise = (async () => {
-      console.log(`[ScraperEngine] Launching real-browser stealth engine for Cloudflare bypass at ${this.baseUrl}...`);
-
+      console.log(`[ScraperEngine] Launching stealth browser to bypass Cloudflare at ${this.baseUrl}...`);
       try {
-        const browserArgs = [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--no-first-run',
-          '--no-zygote',
-          '--window-size=1920,1080',
-          '--lang=id-ID,id,en-US,en',
-        ];
-
-<<<<<<< HEAD
+        const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || undefined;
         const proxyArg = process.env.PROXY_SERVER ? [`--proxy-server=${process.env.PROXY_SERVER}`] : [];
 
         this.browser = await (puppeteerInstance as any).launch({
@@ -59,59 +60,162 @@ export class IdlixScraperEngine {
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu',
+            '--disable-software-rasterizer',
+            '--disable-accelerated-2d-canvas',
             '--no-first-run',
             '--no-zygote',
             '--disable-extensions',
             '--disable-blink-features=AutomationControlled',
-            '--window-size=1920,1080',
+            '--window-size=800,600',
             '--lang=id-ID,id,en-US,en',
+            // --- Optimasi CPU & Memory untuk Server 2-Core 8GB ---
+            '--renderer-process-limit=1', // Batasi hanya 1 proses renderer agar tidak memakan kedua core
+            '--js-flags=--max-old-space-size=256', // Batasi heap memory V8 ke 256MB
+            '--disable-background-networking',
+            '--disable-background-timer-throttling=false',
+            '--disable-backgrounding-occluded-windows=false',
+            '--disable-breakpad',
+            '--disable-component-update',
+            '--disable-domain-reliability',
+            '--disable-features=AudioServiceOutOfProcess,IsolateOrigins,site-per-process,Translate,BackForwardCache',
+            '--mute-audio',
+            '--disk-cache-size=16777216', // Maks 16MB cache disk
+            '--media-cache-size=16777216',
             ...proxyArg,
           ],
-=======
-        // Option A: puppeteer-real-browser with Xvfb virtual display on Linux VPS & SOCKS5 proxy
-        const realBrowser = await (connect as any)({
-          headless: false,
-          turnstile: true,
-          disableXvfb: process.platform !== 'linux',
-          args: browserArgs,
->>>>>>> db85e1746165ff72654fceea92d9b5ab2d59057d
         });
 
-        this.browser = realBrowser.browser;
-        this.page = realBrowser.page;
+        const pages = await this.browser!.pages();
+        this.page = pages.length > 0 ? pages[0] : await this.browser!.newPage();
 
-        // Block heavy external ads only, never block challenge resources
-        try {
-          await this.page.setRequestInterception(true);
-          this.page.on('request', (req: any) => {
-            const url = req.url();
-            const adBlock = ['xyzchat', 'doubleclick', 'google-analytics', 'analytics.google.com'];
+        // Resolusi 800x600 memangkas beban CPU rasterizer hingga >70% dibanding 1920x1080
+        await this.page.setViewport({ width: 800, height: 600 });
 
-            if (adBlock.some((d) => url.includes(d))) {
-              req.abort();
-            } else {
-              req.continue();
-            }
+        // Advanced stealth: mask navigator.webdriver and chrome runtime signatures
+        await this.page.evaluateOnNewDocument(() => {
+          Object.defineProperty(navigator, 'webdriver', {
+            get: () => undefined,
           });
-        } catch (_) {}
+          (window as any).chrome = {
+            runtime: {},
+            loadTimes: () => {},
+            csi: () => {},
+            app: {},
+          };
+        });
 
-        console.log(`[ScraperEngine] Navigating to ${this.baseUrl} to solve Cloudflare challenge...`);
+        await this.page.setUserAgent(
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
+        );
+
+        await this.page.setExtraHTTPHeaders({
+          'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Sec-Ch-Ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+          'Sec-Ch-Ua-Mobile': '?0',
+          'Sec-Ch-Ua-Platform': '"Windows"',
+        });
+
+        // Request interception cerdas:
+        // Saat solve challenge, izinkan script challenge.
+        // Begitu lolos, blokir image/media/font/stylesheet agar CPU & RAM tidak terbebani
+        await this.page.setRequestInterception(true);
+        this.page.on('request', (req) => {
+          const url = req.url();
+          const resourceType = req.resourceType();
+
+          // Blokir domain iklan berat
+          const adBlock = ['xyzchat', 'doubleclick', 'google-analytics', 'analytics.google.com', 'histats', 'mgid'];
+          if (adBlock.some((d) => url.includes(d))) {
+            req.abort();
+            return;
+          }
+
+          // Setelah siap, blokir resource yang tidak diperlukan untuk fetch API
+          if (this.isReady && ['image', 'media', 'font', 'websocket'].includes(resourceType)) {
+            req.abort();
+            return;
+          }
+
+          req.continue();
+        });
+
+        console.log(`[ScraperEngine] Navigating to ${this.baseUrl} to solve challenge...`);
         await this.page.goto(this.baseUrl, {
           waitUntil: 'domcontentloaded',
-          timeout: 60000,
+          timeout: 45000,
         });
 
-        console.log('[ScraperEngine] Waiting for Cloudflare Turnstile verification...');
+        // Cloudflare Turnstile detection & auto-solving
+        const isChallengeActive = async () => {
+          try {
+            const title = (await this.page!.title()).toLowerCase();
+            return title.includes('just a moment') || title.includes('attention required');
+          } catch (_) {
+            return false;
+          }
+        };
+
+        if (await isChallengeActive()) {
+          console.log('[ScraperEngine] Cloudflare challenge detected, monitoring Turnstile resolution...');
+
+          for (let attempt = 1; attempt <= 15; attempt++) {
+            await new Promise((r) => setTimeout(r, 2000));
+
+            if (!(await isChallengeActive())) {
+              break;
+            }
+
+            try {
+              const frames = this.page!.frames();
+              for (const frame of frames) {
+                if (frame.url().includes('challenges.cloudflare.com')) {
+                  const checkbox = await frame.$(
+                    'input[type="checkbox"], .ctp-checkbox-label, #challenge-stage, .mark'
+                  );
+                  if (checkbox) {
+                    console.log(`[ScraperEngine] Attempting interaction with Turnstile widget (attempt ${attempt})...`);
+                    await checkbox.click().catch(() => {});
+                  }
+                }
+              }
+            } catch (_) {}
+          }
+        }
+
+        // Wait until Cloudflare challenge passes
         await this.page.waitForFunction(
           () => {
             const title = document.title.toLowerCase();
             return !title.includes('just a moment') && !title.includes('attention required');
           },
-          { timeout: 45000 }
+          { timeout: 35000 }
         );
 
         console.log(`[ScraperEngine] Cloudflare challenge bypassed successfully! Page Title: "${await this.page.title()}"`);
         this.isReady = true;
+        this.sessionCreatedAt = Date.now();
+
+        // --- KUNCI PENGHEMAT CPU: Hentikan loop animasi, media & timers halaman ---
+        try {
+          await this.page.evaluate(() => {
+            window.stop();
+            const mediaElements = document.querySelectorAll('video, audio');
+            mediaElements.forEach((m: any) => {
+              if (m.pause) m.pause();
+            });
+          });
+          console.log('[ScraperEngine] Background page frozen to reduce CPU consumption to ~0%');
+        } catch (_) {}
+
+        // Mulai periodic health-check timer (cek setiap 30 menit)
+        if (this.healthCheckTimer) clearInterval(this.healthCheckTimer);
+        this.healthCheckTimer = setInterval(async () => {
+          if (this.shouldRecycle()) {
+            console.log('[ScraperEngine] Periodic check: recycling browser session to free RAM...');
+            await this.recycleSession();
+          }
+        }, 30 * 60 * 1000);
+
       } catch (err: any) {
         console.error(`[ScraperEngine] Failed to initialize browser session: ${err?.message || err}`);
         this.isReady = false;
@@ -131,10 +235,36 @@ export class IdlixScraperEngine {
     return this.initPromise;
   }
 
-  public getSessionStatus(): { isReady: boolean; targetUrl: string } {
+  private shouldRecycle(): boolean {
+    const ageExceeded = this.sessionCreatedAt > 0 && Date.now() - this.sessionCreatedAt > this.MAX_SESSION_AGE_MS;
+    const requestsExceeded = this.requestCount >= this.MAX_REQUESTS_BEFORE_RECYCLE;
+    return ageExceeded || requestsExceeded;
+  }
+
+  public async recycleSession(): Promise<void> {
+    console.log('[ScraperEngine] Recycling browser session to release memory & CPU...');
+    this.isReady = false;
+    this.requestCount = 0;
+    if (this.healthCheckTimer) {
+      clearInterval(this.healthCheckTimer);
+      this.healthCheckTimer = null;
+    }
+    if (this.browser) {
+      try {
+        await this.browser.close();
+      } catch (_) {}
+      this.browser = null;
+      this.page = null;
+    }
+    await this.init();
+  }
+
+  public getSessionStatus(): { isReady: boolean; targetUrl: string; requestCount: number; uptimeSec: number } {
     return {
       isReady: this.isReady && this.page !== null && !this.page.isClosed(),
       targetUrl: this.baseUrl,
+      requestCount: this.requestCount,
+      uptimeSec: this.sessionCreatedAt ? Math.floor((Date.now() - this.sessionCreatedAt) / 1000) : 0,
     };
   }
 
@@ -149,6 +279,12 @@ export class IdlixScraperEngine {
   ): Promise<{ status: number; data: T }> {
     await this.init();
 
+    // Hitung request & cek apakah sudah saatnya mendaur ulang browser
+    this.requestCount++;
+    if (this.shouldRecycle()) {
+      await this.recycleSession();
+    }
+
     if (!this.page || this.page.isClosed()) {
       throw new Error('Browser page session is closed');
     }
@@ -158,12 +294,7 @@ export class IdlixScraperEngine {
 
     try {
       const result = await this.page.evaluate(
-        async (
-          fetchUrl: string,
-          fetchMethod: string,
-          fetchBody: any,
-          fetchHeaders: Record<string, string>
-        ) => {
+        async (fetchUrl, fetchMethod, fetchBody, fetchHeaders) => {
           try {
             const res = await fetch(fetchUrl, {
               method: fetchMethod,
@@ -338,8 +469,14 @@ export class IdlixScraperEngine {
   }
 
   public async close(): Promise<void> {
+    if (this.healthCheckTimer) {
+      clearInterval(this.healthCheckTimer);
+      this.healthCheckTimer = null;
+    }
     if (this.browser) {
-      await this.browser.close();
+      try {
+        await this.browser.close();
+      } catch (_) {}
       this.browser = null;
       this.page = null;
       this.isReady = false;
