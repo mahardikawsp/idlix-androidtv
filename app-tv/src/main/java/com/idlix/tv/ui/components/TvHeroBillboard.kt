@@ -115,7 +115,6 @@ fun TvHeroBillboard(
                 .background(HeroLeftBrush)
         )
 
-        // Content
         Column(
             modifier = Modifier
                 .fillMaxHeight()

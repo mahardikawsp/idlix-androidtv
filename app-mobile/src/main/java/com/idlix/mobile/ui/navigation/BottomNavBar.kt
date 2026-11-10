@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -34,6 +35,7 @@ fun MobileBottomNavBar(
     ) {
         BottomNavItem.items.forEach { item ->
             val isSelected = currentRoute == item.route
+            val itemLabel = stringResource(item.labelRes)
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
@@ -50,12 +52,12 @@ fun MobileBottomNavBar(
                 icon = {
                     Icon(
                         imageVector = item.icon,
-                        contentDescription = item.label
+                        contentDescription = itemLabel
                     )
                 },
                 label = {
                     Text(
-                        text = item.label,
+                        text = itemLabel,
                         fontSize = 11.sp
                     )
                 },

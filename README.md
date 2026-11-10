@@ -4,6 +4,33 @@
   <img src="https://cdn.abdilah.id/uploads/com.idlix.tv_and_com.idlix.mobile-preview.png">
 </p>
 
+<p align="center">
+  <a href="https://saweria.co/everydaysammmy" target="_blank">
+    <img src="https://img.shields.io/badge/☕_Buy_Me_a_Coffee-Saweria-faad14?style=for-the-badge" alt="Buy Me a Coffee (Saweria)" />
+  </a>
+</p>
+
+> ☕ **Dukungan & Kontribusi:** Suka dengan proyek ini? Anda dapat mendukung pengembangan aplikasi ini melalui [**Saweria: Buy me a coffee**](https://saweria.co/everydaysammmy).
+
+---
+
+### 📑 Index
+* [Fitur Utama (Key Features)](#fitur-utama)
+  * [Android Mobile Client (`app-mobile`)](#fitur-mobile)
+  * [Android TV Client (`app-tv`)](#fitur-tv)
+  * [Backend API Service](#fitur-backend)
+* [Struktur Direktori Multi-Module (Project Structure)](#struktur-direktori)
+* [Panduan Memulai & Kompilasi APK (Build Guide)](#panduan-build)
+  * [1. Menjalankan Backend API](#build-backend)
+  * [2. Membangun APK Android TV (`app-tv`)](#build-tv)
+  * [3. Membangun APK Android Mobile (`app-mobile`)](#build-mobile)
+* [Download Release APK](#download-release)
+* [Frequently Asked Questions (FAQ)](#faq)
+  * [Mengalami Error HTTP 403 (Forbidden)?](#faq-403)
+* [Keamanan & Lisensi](#keamanan-lisensi)
+
+---
+
 A modern, high-performance, **100% native Android streaming platform** for movies and TV series from IDLIX with multi-platform support (Android TV & Android Mobile) built using a unified **Multi-Module Architecture**.
 
 Project ini terbagi menjadi modul-modul independen yang saling melengkapi:
@@ -14,8 +41,10 @@ Project ini terbagi menjadi modul-modul independen yang saling melengkapi:
 
 ---
 
+<a id="fitur-utama"></a>
 ## 🌟 Fitur Utama (Key Features)
 
+<a id="fitur-mobile"></a>
 ### 📱 Android Mobile Client (`app-mobile`)
 * **Material 3 & Edge-to-Edge Display**:
   * Tampilan immersive modern dengan handling `WindowInsets` bebas dari benturan notch / kamera punch-hole.
@@ -37,6 +66,7 @@ Project ini terbagi menjadi modul-modul independen yang saling melengkapi:
 * **Integrasi Subtitle SubDL**:
   * Pemilihan trek subtitle bawaan atau pencarian subtitle Bahasa Indonesia/Inggris via SubDL API.
 
+<a id="fitur-tv"></a>
 ### 📺 Android TV Client (`app-tv`)
 * **100% Native Architecture**: Bebas Chromium dan WebView di dalam APK. Menggunakan hardware decoder bawaan TV (`MediaCodec`) via AndroidX Media3 ExoPlayer.
 * **Netflix-Style Leanback UI**:
@@ -56,6 +86,7 @@ Project ini terbagi menjadi modul-modul independen yang saling melengkapi:
 * **Bilingual Localization**:
   * Mendukung penuh Bahasa Indonesia (`id`/`in`) dan English (`en`). Otomatis mengikuti bahasa sistem TV.
 
+<a id="fitur-backend"></a>
 ### 🚀 Backend API Service
 * **Cloudflare Turnstile & Challenge Bypass**: Stealth browser otomatis menyelesaikan proteksi Cloudflare di sisi server.
 * **In-Memory LRU Caching**: Respons data instan (<15ms) untuk katalog film, serial, dan kategori.
@@ -64,6 +95,7 @@ Project ini terbagi menjadi modul-modul independen yang saling melengkapi:
 
 ---
 
+<a id="struktur-direktori"></a>
 ## 📁 Struktur Direktori Multi-Module (Project Structure)
 
 ```
@@ -116,8 +148,10 @@ Idlix for TV/
 
 ---
 
+<a id="panduan-build"></a>
 ## 🛠️ Panduan Memulai & Kompilasi APK (Build Guide)
 
+<a id="build-backend"></a>
 ### 1. Menjalankan Backend API
 
 Backend API wajib berjalan agar aplikasi Android TV dan Mobile dapat mengambil katalog film dan streaming video.
@@ -134,6 +168,7 @@ curl http://localhost:5376/health
 
 ---
 
+<a id="build-tv"></a>
 ### 2. Membangun APK Android TV (`app-tv`)
 
 #### Build APK Debug / Release:
@@ -155,6 +190,7 @@ adb -s 192.168.x.tv:5555 install -r app-tv/build/outputs/apk/debug/app-tv-debug.
 
 ---
 
+<a id="build-mobile"></a>
 ### 3. Membangun APK Android Mobile (`app-mobile`)
 
 #### Build APK Debug / Release:
@@ -185,12 +221,29 @@ adb -s "adb-DELFOVPBBQPFDIA6-W6Rq2R._adb-tls-connect._tcp" shell am start -n com
 
 ---
 
+<a id="download-release"></a>
 ## Download Release Apk
 
 Look at this [page](https://github.com/samdgea/idlix-androidtv/releases).
 
 ---
 
+<a id="faq"></a>
+## ❓ Frequently Asked Questions (FAQ)
+
+<a id="faq-403"></a>
+### ⚠️ Mengalami Error HTTP 403 (Forbidden)?
+Jika Anda mengalami error **403 Forbidden** saat memuat katalog film/serial atau memutar video untuk sementara:
+1. Pastikan **Backend API Server** Anda telah diatur ke domain default IDLIX:
+   👉 **`https://z2.idlixku.com/`**
+2. **Cara Mengubah Alamat Backend API Server:**
+   * **Di Aplikasi (Android TV & Mobile):** Buka menu **Pengaturan (Settings)** ⚙️ > masukkan atau ubah URL pada bagian **Backend API Server** ke `https://z2.idlixku.com/`. (Pastikan forward slash diakhir alamat juga terinput)
+   * Test menekan tombol **Test Backend Connection** [Pastikan hasilnya Backend connected! (HTTP 200, xxxms)]
+3. Setelah itu, Klik tombol **Save All Settings**
+
+---
+
+<a id="keamanan-lisensi"></a>
 ## 🔒 Keamanan & Lisensi
 
 * File sensitif seperti `local.properties`, sertifikat signing keystore (`*.jks`), dan credential environment dilindungi di [`.gitignore`](file:///Users/abdi/Documents/Personal%20Workspace/Idlix%20for%20TV/.gitignore).

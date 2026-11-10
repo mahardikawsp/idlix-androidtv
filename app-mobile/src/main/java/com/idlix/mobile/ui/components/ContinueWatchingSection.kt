@@ -31,12 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.idlix.data.model.WatchHistoryItem
+import com.idlix.mobile.R
 import com.idlix.mobile.ui.theme.IdlixRed
 import com.idlix.mobile.ui.theme.ProgressRed
 import com.idlix.mobile.ui.theme.SurfaceVariantDark
@@ -54,7 +56,7 @@ fun ContinueWatchingSection(
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Continue Watching",
+            text = stringResource(R.string.continue_watching),
             color = TextWhite,
             fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
@@ -160,7 +162,7 @@ fun ContinueWatchingCard(
         )
 
         val epTitle = item.episodeTitle
-        val subtitle = if (!epTitle.isNullOrBlank()) epTitle else if (item.remainingMinutes > 0) "${item.remainingMinutes} min left" else ""
+        val subtitle = if (!epTitle.isNullOrBlank()) epTitle else if (item.remainingMinutes > 0) stringResource(R.string.remaining_minutes, item.remainingMinutes) else ""
         if (subtitle.isNotBlank()) {
             Text(
                 text = subtitle,

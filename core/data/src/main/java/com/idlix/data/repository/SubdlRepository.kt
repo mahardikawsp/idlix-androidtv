@@ -4,9 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.idlix.data.api.ApiClient
+import com.idlix.data.model.SubdlQuery
 import com.idlix.data.model.SubdlResponse
+import com.idlix.data.model.SubdlSearchResult
 import com.idlix.data.model.SubdlSubtitle
 import com.idlix.data.model.SubtitleTrack
+import com.idlix.data.util.LocaleHelper
+import com.idlix.data.util.SubdlTitleCleaner
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
@@ -46,6 +50,119 @@ object SubdlRepository {
         } catch (_: Exception) {}
     }
 
+    suspend fun testApiKey(targetKey: String): Result<String> = withContext(Dispatchers.IO) {
+        val trimmed = targetKey.trim()
+        if (trimmed.isBlank()) {
+            return@withContext Result.failure(IllegalArgumentException("SubDL API key cannot be empty"))
+        }
+        val testEndpoint = "$BASE_URL?api_key=$trimmed&film_name=Avatar"
+        try {
+            val req = Request.Builder()
+                .url(testEndpoint)
+                .header("User-Agent", "Mozilla/5.0 (Android TV; Idlix)")
+                .get()
+                .build()
+            ApiClient.okHttpClient.newCall(req).execute().use { resp ->
+                if (resp.isSuccessful) {
+                    val body = resp.body?.string().orEmpty()
+                    val parsed = try {
+                        ApiClient.json.decodeFromString<SubdlResponse>(body)
+                    } catch (_: Exception) { null }
+
+                    if (parsed?.status == true) {
+                        Result.success("SubDL API key is valid (${parsed.subtitles.size} subtitles found)")
+                    } else {
+                        Result.failure(Exception("Invalid response or quota exceeded"))
+                    }
+                } else {
+                    Result.failure(Exception("HTTP error: ${resp.code}"))
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    fun buildSearchUrl(query: SubdlQuery, apiKey: String): String {
+        val queryParams = StringBuilder("api_key=$apiKey&languages=${query.languages}")
+        if (query.sdId != null && query.sdId > 0) {
+            queryParams.append("&sd_id=${query.sdId}")
+        } else if (query.tmdbId != null && query.tmdbId > 0) {
+            queryParams.append("&tmdb_id=${query.tmdbId}")
+        } else if (!query.imdbId.isNullOrBlank()) {
+            queryParams.append("&imdb_id=${query.imdbId.trim()}")
+        } else if (!query.filmName.isNullOrBlank()) {
+            val encoded = URLEncoder.encode(query.filmName.trim(), "UTF-8")
+            queryParams.append("&film_name=$encoded")
+        }
+
+        if (query.year != null && query.year > 0) {
+            queryParams.append("&year=${query.year}")
+        }
+
+        val effectiveType = if (query.type == "tv" || query.season != null) "tv" else "movie"
+        queryParams.append("&type=$effectiveType")
+        if (effectiveType == "tv") {
+            if (query.season != null) queryParams.append("&season_number=${query.season}")
+            if (query.episode != null) queryParams.append("&episode_number=${query.episode}")
+        }
+
+        return "$BASE_URL?$queryParams"
+    }
+
+    suspend fun search(query: SubdlQuery): SubdlSearchResult = withContext(Dispatchers.IO) {
+        try {
+            val apiKey = getApiKey()
+            val requestUrl = buildSearchUrl(query, apiKey)
+            val request = Request.Builder()
+                .url(requestUrl)
+                .header("User-Agent", "Mozilla/5.0 (Android TV; Idlix)")
+                .build()
+
+            val response = ApiClient.okHttpClient.newCall(request).execute()
+            if (!response.isSuccessful) {
+                Log.w(TAG, "SubDL request failed with code: ${response.code}")
+                val reason = when (response.code) {
+                    401, 403 -> SubdlSearchResult.Error.Reason.INVALID_KEY
+                    429 -> SubdlSearchResult.Error.Reason.QUOTA
+                    else -> SubdlSearchResult.Error.Reason.HTTP
+                }
+                return@withContext SubdlSearchResult.Error(reason, "HTTP error: ${response.code}")
+            }
+
+            val body = response.body?.string().orEmpty()
+            val subdlRes = try {
+                ApiClient.json.decodeFromString<SubdlResponse>(body)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to parse SubDL response: ${e.message}")
+                return@withContext SubdlSearchResult.Error(SubdlSearchResult.Error.Reason.PARSE, e.localizedMessage)
+            }
+
+            if (subdlRes.subtitles.isNotEmpty()) {
+                SubdlSearchResult.Found(
+                    subtitles = subdlRes.subtitles,
+                    candidates = subdlRes.results
+                )
+            } else {
+                if (!subdlRes.status && !subdlRes.error.isNullOrBlank()) {
+                    val err = subdlRes.error.lowercase()
+                    if (err.contains("key") || err.contains("auth")) {
+                        SubdlSearchResult.Error(SubdlSearchResult.Error.Reason.INVALID_KEY, subdlRes.error)
+                    } else if (err.contains("limit") || err.contains("quota")) {
+                        SubdlSearchResult.Error(SubdlSearchResult.Error.Reason.QUOTA, subdlRes.error)
+                    } else {
+                        SubdlSearchResult.NotFound(candidates = subdlRes.results)
+                    }
+                } else {
+                    SubdlSearchResult.NotFound(candidates = subdlRes.results)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to search SubDL subtitles: ${e.message}")
+            SubdlSearchResult.Error(SubdlSearchResult.Error.Reason.NETWORK, e.localizedMessage)
+        }
+    }
+
     suspend fun searchAllSubtitles(
         title: String,
         type: String = "movie",
@@ -55,50 +172,20 @@ object SubdlRepository {
         episode: Int? = null,
         languages: String = "ID,EN"
     ): List<SubdlSubtitle> = withContext(Dispatchers.IO) {
-        try {
-            val apiKey = getApiKey()
-            val queryParams = StringBuilder("api_key=$apiKey&languages=$languages")
-            if (tmdbId != null && tmdbId > 0) {
-                queryParams.append("&tmdb_id=$tmdbId")
-            } else if (!imdbId.isNullOrBlank()) {
-                queryParams.append("&imdb_id=$imdbId")
-            } else {
-                val cleanTitle = title.replace(Regex("\\(\\d{4}\\)"), "").trim()
-                val encoded = URLEncoder.encode(cleanTitle, "UTF-8")
-                queryParams.append("&film_name=$encoded")
-            }
-
-            if (type == "tv" || season != null) {
-                queryParams.append("&type=tv")
-                if (season != null) queryParams.append("&season_number=$season")
-                if (episode != null) queryParams.append("&episode_number=$episode")
-            } else {
-                queryParams.append("&type=movie")
-            }
-
-            val requestUrl = "$BASE_URL?$queryParams"
-            val request = Request.Builder()
-                .url(requestUrl)
-                .header("User-Agent", "Mozilla/5.0 (Android TV; Idlix)")
-                .build()
-
-            val response = ApiClient.okHttpClient.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.w(TAG, "SubDL request failed with code: ${response.code}")
-                return@withContext emptyList()
-            }
-
-            val body = response.body?.string() ?: return@withContext emptyList()
-            val subdlRes = ApiClient.json.decodeFromString<SubdlResponse>(body)
-            if (!subdlRes.status || subdlRes.subtitles.isEmpty()) {
-                Log.d(TAG, "No SubDL subtitles found for $title")
-                return@withContext emptyList()
-            }
-
-            subdlRes.subtitles
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to search SubDL subtitles: ${e.message}")
-            emptyList()
+        val cleaned = SubdlTitleCleaner.clean(title)
+        val query = SubdlQuery(
+            filmName = cleaned.title,
+            year = cleaned.year,
+            type = type,
+            tmdbId = tmdbId,
+            imdbId = imdbId,
+            season = season,
+            episode = episode,
+            languages = languages
+        )
+        when (val result = search(query)) {
+            is SubdlSearchResult.Found -> result.subtitles
+            else -> emptyList()
         }
     }
 
@@ -127,6 +214,29 @@ object SubdlRepository {
         }
     }
 
+    suspend fun fetchSubtitleForLanguage(
+        title: String,
+        type: String = "movie",
+        tmdbId: Long? = null,
+        imdbId: String? = null,
+        season: Int? = null,
+        episode: Int? = null,
+        targetLang: String = LocaleHelper.getPreferredLanguage(),
+        context: Context
+    ): SubtitleTrack? = withContext(Dispatchers.IO) {
+        val langParam = if (targetLang.equals("id", ignoreCase = true)) "ID" else "EN"
+        val allSubs = searchAllSubtitles(title, type, tmdbId, imdbId, season, episode, languages = langParam)
+        val chosen = allSubs.firstOrNull {
+            if (langParam == "ID") {
+                it.language.equals("ID", ignoreCase = true) || it.lang.equals("indonesian", ignoreCase = true)
+            } else {
+                it.language.equals("EN", ignoreCase = true) || it.lang.equals("english", ignoreCase = true)
+            }
+        } ?: allSubs.firstOrNull() ?: return@withContext null
+
+        downloadSubtitle(chosen, context)
+    }
+
     suspend fun fetchIndonesianSubtitle(
         title: String,
         type: String = "movie",
@@ -135,14 +245,16 @@ object SubdlRepository {
         season: Int? = null,
         episode: Int? = null,
         context: Context
-    ): SubtitleTrack? = withContext(Dispatchers.IO) {
-        val allSubs = searchAllSubtitles(title, type, tmdbId, imdbId, season, episode, languages = "ID")
-        val chosen = allSubs.firstOrNull {
-            it.language.equals("ID", ignoreCase = true) || it.lang.equals("indonesian", ignoreCase = true)
-        } ?: allSubs.firstOrNull() ?: return@withContext null
-
-        downloadSubtitle(chosen, context)
-    }
+    ): SubtitleTrack? = fetchSubtitleForLanguage(
+        title = title,
+        type = type,
+        tmdbId = tmdbId,
+        imdbId = imdbId,
+        season = season,
+        episode = episode,
+        targetLang = "id",
+        context = context
+    )
 
     private fun downloadAndExtractSrt(zipUrl: String, context: Context, filePrefix: String): File? {
         return try {

@@ -46,6 +46,7 @@ proguard/
 ._*
 Thumbs.db
 ehthumbs.db
+.nvmrc
 
 # Logs & Captures
 *.log

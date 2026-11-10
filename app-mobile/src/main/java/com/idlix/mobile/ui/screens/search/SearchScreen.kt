@@ -40,11 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.idlix.mobile.R
 import com.idlix.mobile.ui.components.MobileMovieCard
 import com.idlix.mobile.ui.theme.BackgroundDark
 import com.idlix.mobile.ui.theme.IdlixRed
@@ -80,11 +82,11 @@ fun SearchScreen(
             OutlinedTextField(
                 value = uiState.query,
                 onValueChange = { viewModel.onQueryChange(it) },
-                placeholder = { Text("Search movies, TV series, actors...", color = TextDim, fontSize = 14.sp) },
+                placeholder = { Text(stringResource(R.string.search_placeholder), color = TextDim, fontSize = 14.sp) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Search,
-                        contentDescription = "Search",
+                        contentDescription = stringResource(R.string.search),
                         tint = TextDim
                     )
                 },
@@ -93,7 +95,7 @@ fun SearchScreen(
                         IconButton(onClick = { viewModel.clearQuery() }) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
-                                contentDescription = "Clear",
+                                contentDescription = stringResource(R.string.clear_all),
                                 tint = TextDim
                             )
                         }
@@ -133,7 +135,7 @@ fun SearchScreen(
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
                 Text(
-                    text = "Popular Searches",
+                    text = stringResource(R.string.popular_searches),
                     color = TextWhite,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
@@ -171,7 +173,7 @@ fun SearchScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "No results found for \"${uiState.query}\"",
+                    text = stringResource(R.string.no_results_for, uiState.query),
                     color = TextMuted,
                     fontSize = 14.sp
                 )

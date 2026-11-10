@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,7 +79,7 @@ fun HomeScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Unable to connect to server",
+                        text = stringResource(R.string.unable_to_connect),
                         color = TextWhite,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -96,7 +97,7 @@ fun HomeScreen(
                     ) {
                         Icon(Icons.Filled.Refresh, contentDescription = null)
                         Spacer(modifier = Modifier.size(6.dp))
-                        Text("Retry")
+                        Text(stringResource(R.string.retry))
                     }
                 }
             }
@@ -124,13 +125,12 @@ fun HomeScreen(
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = "Settings",
+                            contentDescription = stringResource(R.string.settings),
                             tint = TextWhite
                         )
                     }
                 }
 
-                // 1. Hero Carousel
                 if (uiState.bannerMovies.isNotEmpty()) {
                     HeroBannerPager(
                         movies = uiState.bannerMovies,
@@ -139,7 +139,6 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // 2. Continue Watching
                 if (uiState.continueWatching.isNotEmpty()) {
                     ContinueWatchingSection(
                         items = uiState.continueWatching,
@@ -148,7 +147,6 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // If network failed to load but continue watching exists, show inline retry card
                 if (uiState.bannerMovies.isEmpty() && uiState.popularMovies.isEmpty()) {
                     Card(
                         colors = CardDefaults.cardColors(containerColor = SurfaceDark),
@@ -164,7 +162,7 @@ fun HomeScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = uiState.error ?: "Gagal memuat rekomendasi film & serial",
+                                text = uiState.error ?: stringResource(R.string.failed_load_recommendations),
                                 color = TextWhite,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Medium
@@ -177,57 +175,52 @@ fun HomeScreen(
                             ) {
                                 Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("Coba Lagi", fontSize = 12.sp)
+                                Text(stringResource(R.string.retry), fontSize = 12.sp)
                             }
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // 3. Trending Now
                 if (uiState.trending.isNotEmpty()) {
                     MovieSwimlane(
-                        title = "Trending Now",
+                        title = stringResource(R.string.trending_now),
                         movies = uiState.trending,
                         onMovieClick = { slug -> onNavigateToDetail("movie", slug) }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // 4. Popular TV Series
                 if (uiState.popularSeries.isNotEmpty()) {
                     SeriesSwimlane(
-                        title = "Popular TV Series",
+                        title = stringResource(R.string.popular_series),
                         seriesList = uiState.popularSeries,
                         onSeriesClick = { slug -> onNavigateToDetail("series", slug) }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // 5. Popular Movies
                 if (uiState.popularMovies.isNotEmpty()) {
                     MovieSwimlane(
-                        title = "Popular Movies",
+                        title = stringResource(R.string.popular_movies),
                         movies = uiState.popularMovies,
                         onMovieClick = { slug -> onNavigateToDetail("movie", slug) }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // 6. Action Movies
                 if (uiState.actionMovies.isNotEmpty()) {
                     MovieSwimlane(
-                        title = "Adrenaline Action & Adventure",
+                        title = stringResource(R.string.movies_action),
                         movies = uiState.actionMovies,
                         onMovieClick = { slug -> onNavigateToDetail("movie", slug) }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // 7. Comedy Movies
                 if (uiState.comedyMovies.isNotEmpty()) {
                     MovieSwimlane(
-                        title = "Top Comedy Movies",
+                        title = stringResource(R.string.movies_comedy),
                         movies = uiState.comedyMovies,
                         onMovieClick = { slug -> onNavigateToDetail("movie", slug) }
                     )

@@ -10,10 +10,14 @@ import com.idlix.data.model.MovieDetail
 import com.idlix.data.model.ResolvedPlayback
 import com.idlix.data.model.Season
 import com.idlix.data.model.SeriesDetail
+import com.idlix.data.model.SubdlItem
+import com.idlix.data.model.SubdlQuery
+import com.idlix.data.model.SubdlSearchResult
 import com.idlix.data.model.SubdlSubtitle
 import com.idlix.data.model.SubtitleTrack
 import com.idlix.data.repository.IdlixRepository
 import com.idlix.data.repository.SubdlRepository
+import com.idlix.data.util.SubdlTitleCleaner
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -55,6 +59,16 @@ data class DetailUiState(
     val isSubtitlePickerVisible: Boolean = false,
     val subdlSubtitles: List<SubdlSubtitle> = emptyList(),
     val isSearchingSubdl: Boolean = false,
+    val subdlCandidates: List<SubdlItem> = emptyList(),
+    val subdlError: SubdlSearchResult.Error? = null,
+    val subdlActiveQuery: SubdlQuery? = null,
+    val isManualSearchOpen: Boolean = false,
+    val manualTitle: String = "",
+    val manualYear: String = "",
+    val manualSeason: String = "",
+    val manualEpisode: String = "",
+    val isUsingSessionOverride: Boolean = false,
+    val isAppearancePanelOpen: Boolean = false,
 
     // Next Episode Auto-Prompt
     val nextEpisode: NextEpisodeInfo? = null,
@@ -331,7 +345,10 @@ class DetailViewModel(
             )
 
             result.onSuccess { resolved ->
-                val defaultSub = resolved.subtitles.firstOrNull { it.lang == "id" }
+                val prefLang = com.idlix.data.util.LocaleHelper.getPreferredLanguage()
+                val fallbackLang = if (prefLang == "id") "en" else "id"
+                val defaultSub = resolved.subtitles.firstOrNull { it.lang.equals(prefLang, ignoreCase = true) }
+                    ?: resolved.subtitles.firstOrNull { it.lang.equals(fallbackLang, ignoreCase = true) }
                     ?: resolved.subtitles.firstOrNull()
 
                 _uiState.value = _uiState.value.copy(
@@ -489,34 +506,173 @@ class DetailViewModel(
         playEpisode(series, next.seasonNumber, next.episode)
     }
 
+    private var sessionQueryOverride: SubdlQuery? = null
+    private var subdlSearchJob: Job? = null
+
     fun openSubtitlePicker() {
-        _uiState.value = _uiState.value.copy(isSubtitlePickerVisible = true)
-        if (_uiState.value.subdlSubtitles.isEmpty()) {
+        _uiState.value = _uiState.value.copy(
+            isSubtitlePickerVisible = true,
+            isManualSearchOpen = false,
+            isAppearancePanelOpen = false
+        )
+        if (_uiState.value.subdlSubtitles.isEmpty() && !_uiState.value.isSearchingSubdl) {
             searchSubdlSubtitles()
         }
     }
 
     fun closeSubtitlePicker() {
-        _uiState.value = _uiState.value.copy(isSubtitlePickerVisible = false)
+        _uiState.value = _uiState.value.copy(
+            isSubtitlePickerVisible = false,
+            isManualSearchOpen = false,
+            isAppearancePanelOpen = false
+        )
     }
 
-    fun searchSubdlSubtitles() {
-        val title = currentContentTitle
-        if (title.isBlank()) return
-
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isSearchingSubdl = true)
-            val results = SubdlRepository.searchAllSubtitles(
-                title = title,
+    fun searchSubdlSubtitles(queryOverride: SubdlQuery? = null) {
+        val targetQuery = queryOverride ?: sessionQueryOverride ?: run {
+            val title = currentContentTitle
+            if (title.isBlank()) return
+            val cleaned = SubdlTitleCleaner.clean(title)
+            SubdlQuery(
+                filmName = cleaned.title,
+                year = cleaned.year,
                 type = if (currentContentType == "episode") "tv" else "movie",
                 season = currentSeasonNumber,
                 episode = currentEpisodeNumber
             )
-            _uiState.value = _uiState.value.copy(
-                isSearchingSubdl = false,
-                subdlSubtitles = results
-            )
         }
+
+        subdlSearchJob?.cancel()
+        subdlSearchJob = viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                isSearchingSubdl = true,
+                subdlActiveQuery = targetQuery,
+                subdlError = null,
+                isUsingSessionOverride = sessionQueryOverride != null
+            )
+            when (val result = SubdlRepository.search(targetQuery)) {
+                is SubdlSearchResult.Found -> {
+                    if (queryOverride != null) {
+                        sessionQueryOverride = queryOverride
+                    }
+                    _uiState.value = _uiState.value.copy(
+                        isSearchingSubdl = false,
+                        subdlSubtitles = result.subtitles,
+                        subdlCandidates = result.candidates,
+                        subdlError = null,
+                        isUsingSessionOverride = sessionQueryOverride != null
+                    )
+                }
+                is SubdlSearchResult.NotFound -> {
+                    _uiState.value = _uiState.value.copy(
+                        isSearchingSubdl = false,
+                        subdlSubtitles = emptyList(),
+                        subdlCandidates = result.candidates,
+                        subdlError = null,
+                        isUsingSessionOverride = sessionQueryOverride != null
+                    )
+                }
+                is SubdlSearchResult.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        isSearchingSubdl = false,
+                        subdlSubtitles = emptyList(),
+                        subdlCandidates = emptyList(),
+                        subdlError = result,
+                        isUsingSessionOverride = sessionQueryOverride != null
+                    )
+                }
+            }
+        }
+    }
+
+    fun openManualSearch() {
+        val defaultCleaned = SubdlTitleCleaner.clean(currentContentTitle)
+        val initialTitle = sessionQueryOverride?.filmName ?: defaultCleaned.title
+        val initialYear = (sessionQueryOverride?.year ?: defaultCleaned.year)?.toString() ?: ""
+        val initialSeason = (sessionQueryOverride?.season ?: currentSeasonNumber)?.toString() ?: ""
+        val initialEpisode = (sessionQueryOverride?.episode ?: currentEpisodeNumber)?.toString() ?: ""
+
+        _uiState.value = _uiState.value.copy(
+            isManualSearchOpen = true,
+            isAppearancePanelOpen = false,
+            manualTitle = initialTitle,
+            manualYear = initialYear,
+            manualSeason = initialSeason,
+            manualEpisode = initialEpisode
+        )
+    }
+
+    fun closeManualSearch() {
+        _uiState.value = _uiState.value.copy(isManualSearchOpen = false)
+    }
+
+    fun updateManualTitle(title: String) {
+        _uiState.value = _uiState.value.copy(manualTitle = title)
+    }
+
+    fun updateManualYear(year: String) {
+        _uiState.value = _uiState.value.copy(manualYear = year)
+    }
+
+    fun updateManualSeason(season: String) {
+        _uiState.value = _uiState.value.copy(manualSeason = season)
+    }
+
+    fun updateManualEpisode(episode: String) {
+        _uiState.value = _uiState.value.copy(manualEpisode = episode)
+    }
+
+    fun submitManualSearch() {
+        val title = _uiState.value.manualTitle.trim()
+        if (title.length < 2) return
+
+        val yearInt = _uiState.value.manualYear.trim().toIntOrNull()
+        val seasonInt = _uiState.value.manualSeason.trim().toIntOrNull()
+        val episodeInt = _uiState.value.manualEpisode.trim().toIntOrNull()
+
+        val query = SubdlQuery(
+            filmName = title,
+            year = yearInt,
+            type = if (currentContentType == "episode" || seasonInt != null) "tv" else "movie",
+            season = seasonInt,
+            episode = episodeInt
+        )
+
+        _uiState.value = _uiState.value.copy(isManualSearchOpen = false)
+        searchSubdlSubtitles(queryOverride = query)
+    }
+
+    fun selectSubdlCandidate(candidate: SubdlItem) {
+        val query = SubdlQuery(
+            sdId = candidate.sd_id,
+            filmName = candidate.name,
+            year = candidate.year,
+            type = candidate.type ?: if (currentContentType == "episode") "tv" else "movie",
+            season = currentSeasonNumber,
+            episode = currentEpisodeNumber
+        )
+        _uiState.value = _uiState.value.copy(isManualSearchOpen = false)
+        searchSubdlSubtitles(queryOverride = query)
+    }
+
+    fun restoreOriginalTitle() {
+        sessionQueryOverride = null
+        _uiState.value = _uiState.value.copy(
+            isUsingSessionOverride = false,
+            isManualSearchOpen = false
+        )
+        searchSubdlSubtitles(queryOverride = null)
+    }
+
+    fun openAppearancePanel() {
+        _uiState.value = _uiState.value.copy(
+            isAppearancePanelOpen = true,
+            isManualSearchOpen = false
+        )
+    }
+
+    fun closeAppearancePanel() {
+        _uiState.value = _uiState.value.copy(isAppearancePanelOpen = false)
     }
 
     fun selectSubtitleTrack(track: SubtitleTrack?) {

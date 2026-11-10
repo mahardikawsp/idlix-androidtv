@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.idlix.data.update.AppUpdateManager
 import com.idlix.mobile.player.PipController
 import com.idlix.mobile.ui.navigation.MainScaffold
 import com.idlix.mobile.ui.theme.IdlixMobileTheme
@@ -20,6 +21,11 @@ class MainActivity : ComponentActivity() {
                 MainScaffold()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppUpdateManager.resumePendingInstallIfAllowed(this)
     }
 
     override fun onUserLeaveHint() {

@@ -31,10 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.idlix.mobile.R
 import com.idlix.mobile.ui.components.ContinueWatchingCard
 import com.idlix.mobile.ui.theme.BackgroundDark
 import com.idlix.mobile.ui.theme.IdlixRed
@@ -66,7 +68,7 @@ fun LibraryScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Library",
+                text = stringResource(R.string.library),
                 color = TextWhite,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -77,7 +79,7 @@ fun LibraryScreen(
                     IconButton(onClick = { showClearDialog = true }) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
-                            contentDescription = "Clear History",
+                            contentDescription = stringResource(R.string.clear_all),
                             tint = TextMuted
                         )
                     }
@@ -86,7 +88,7 @@ fun LibraryScreen(
                 IconButton(onClick = onNavigateToSettings) {
                     Icon(
                         imageVector = Icons.Filled.Settings,
-                        contentDescription = "Settings",
+                        contentDescription = stringResource(R.string.settings),
                         tint = TextWhite
                     )
                 }
@@ -102,14 +104,14 @@ fun LibraryScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "No Watch History",
+                        text = stringResource(R.string.no_history_title),
                         color = TextWhite,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "Movies and series you watch will appear here.",
+                        text = stringResource(R.string.no_history_desc),
                         color = TextMuted,
                         fontSize = 13.sp
                     )
@@ -138,19 +140,19 @@ fun LibraryScreen(
     if (showClearDialog) {
         AlertDialog(
             onDismissRequest = { showClearDialog = false },
-            title = { Text("Clear Watch History") },
-            text = { Text("Are you sure you want to remove all items from your watch history?") },
+            title = { Text(stringResource(R.string.clear_history_title)) },
+            text = { Text(stringResource(R.string.clear_history_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.clearAll()
                     showClearDialog = false
                 }) {
-                    Text("Clear All", color = IdlixRed)
+                    Text(stringResource(R.string.clear_all), color = IdlixRed)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showClearDialog = false }) {
-                    Text("Cancel", color = TextWhite)
+                    Text(stringResource(R.string.cancel), color = TextWhite)
                 }
             },
             containerColor = SurfaceDark,

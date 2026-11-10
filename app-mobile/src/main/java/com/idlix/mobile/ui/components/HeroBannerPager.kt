@@ -33,12 +33,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.idlix.data.model.MovieItem
+import com.idlix.mobile.R
 import com.idlix.mobile.ui.theme.BackgroundDark
 import com.idlix.mobile.ui.theme.IdlixRed
 import com.idlix.mobile.ui.theme.TextMuted
@@ -152,7 +154,7 @@ fun HeroBannerPager(
                                 tint = Color.White
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = "Play", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(text = stringResource(R.string.play), color = Color.White, fontWeight = FontWeight.Bold)
                         }
 
                         OutlinedButton(
@@ -165,7 +167,7 @@ fun HeroBannerPager(
                                 tint = TextWhite
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = "Info", color = TextWhite)
+                            Text(text = stringResource(R.string.info), color = TextWhite)
                         }
                     }
                 }

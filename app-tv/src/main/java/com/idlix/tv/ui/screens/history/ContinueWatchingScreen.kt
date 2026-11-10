@@ -69,7 +69,6 @@ fun ContinueWatchingScreen(
             .padding(horizontal = 28.dp, vertical = 20.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

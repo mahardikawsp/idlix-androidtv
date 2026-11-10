@@ -27,29 +27,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.idlix.mobile.R
 import com.idlix.mobile.ui.components.FilterChipRow
 import com.idlix.mobile.ui.components.FilterItem
 import com.idlix.mobile.ui.components.MobileMovieCard
 import com.idlix.mobile.ui.theme.BackgroundDark
 import com.idlix.mobile.ui.theme.IdlixRed
 import com.idlix.mobile.ui.theme.TextWhite
-
-private val MovieGenres = listOf(
-    FilterItem("all", "All"),
-    FilterItem("action", "Action"),
-    FilterItem("adventure", "Adventure"),
-    FilterItem("animation", "Animation"),
-    FilterItem("comedy", "Comedy"),
-    FilterItem("crime", "Crime"),
-    FilterItem("drama", "Drama"),
-    FilterItem("horror", "Horror"),
-    FilterItem("science-fiction", "Sci-Fi"),
-    FilterItem("thriller", "Thriller")
-)
 
 @Composable
 fun MoviesScreen(
@@ -58,6 +47,22 @@ fun MoviesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val gridState = rememberLazyGridState()
+
+    val allLabel = stringResource(R.string.filter_all)
+    val movieGenres = remember(allLabel) {
+        listOf(
+            FilterItem("all", allLabel),
+            FilterItem("action", "Action"),
+            FilterItem("adventure", "Adventure"),
+            FilterItem("animation", "Animation"),
+            FilterItem("comedy", "Comedy"),
+            FilterItem("crime", "Crime"),
+            FilterItem("drama", "Drama"),
+            FilterItem("horror", "Horror"),
+            FilterItem("science-fiction", "Sci-Fi"),
+            FilterItem("thriller", "Thriller")
+        )
+    }
 
     // Detect when scrolling near the end to trigger pagination
     val shouldLoadMore by remember {
@@ -82,9 +87,8 @@ fun MoviesScreen(
             .background(BackgroundDark)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Header
             Text(
-                text = "Movies",
+                text = stringResource(R.string.movies),
                 color = TextWhite,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -93,9 +97,8 @@ fun MoviesScreen(
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             )
 
-            // Filter Chips
             FilterChipRow(
-                items = MovieGenres,
+                items = movieGenres,
                 selectedId = uiState.selectedGenre,
                 onSelect = { viewModel.selectGenre(it) }
             )

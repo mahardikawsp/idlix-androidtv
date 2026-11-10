@@ -29,7 +29,7 @@ jobs:
       - name: Install Dependencies & Build TypeScript
         run: |
           cd "Backend API"
-          npm ci
+          npm install
           npm run build
 
       # Step 2: Kompresi bundle produksi menjadi release.tar.gz
@@ -73,7 +73,7 @@ jobs:
             export PATH="$PATH:$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node 2>/dev/null | tail -n 1)/bin:/usr/local/bin:/usr/bin:~/.npm-global/bin"
             
             echo "📥 Menginstall dependensi production saja (--omit=dev)..."
-            npm ci --omit=dev
+            npm install --omit=dev
             
             # Pastikan Chrome untuk Puppeteer terpasang di VPS
             npx puppeteer browsers install chrome || true
@@ -86,8 +86,8 @@ jobs:
             pm2 startOrReload ecosystem.config.cjs --env production --update-env
             pm2 save || true
             
-            echo "⏳ Menunggu server ready..."
-            sleep 8
+            echo "⏳ Menunggu server ready & menyelesaikan Cloudflare challenge..."
+            sleep 15
             
             echo "🩺 Memeriksa health check..."
             curl -f http://localhost:5376/health || (echo "Health check gagal! Menampilkan log PM2:" && pm2 logs idlix-backend-api --lines 40 --nostream && exit 1)

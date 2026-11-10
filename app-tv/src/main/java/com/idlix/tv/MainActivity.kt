@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.idlix.data.update.AppUpdateManager
 import com.idlix.tv.ui.navigation.AppNavigation
 import com.idlix.tv.ui.theme.IdlixTvTheme
 
@@ -18,5 +19,10 @@ class MainActivity : ComponentActivity() {
                 AppNavigation()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppUpdateManager.resumePendingInstallIfAllowed(this)
     }
 }

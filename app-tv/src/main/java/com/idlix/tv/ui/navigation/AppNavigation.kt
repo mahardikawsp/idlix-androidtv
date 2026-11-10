@@ -1,16 +1,24 @@
 package com.idlix.tv.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.idlix.data.update.AppPlatform
+import com.idlix.data.update.AppUpdateManager
+import com.idlix.data.update.AppUpdateState
+import com.idlix.tv.BuildConfig
 import com.idlix.tv.ui.components.NavItem
 import com.idlix.tv.ui.components.TvNavDrawer
+import com.idlix.tv.ui.components.TvUpdateDialog
 import com.idlix.tv.ui.screens.detail.DetailScreen
 import com.idlix.tv.ui.screens.history.ContinueWatchingScreen
 import com.idlix.tv.ui.screens.home.HomeScreen
@@ -19,6 +27,7 @@ import com.idlix.tv.ui.screens.player.PlayerScreen
 import com.idlix.tv.ui.screens.search.SearchScreen
 import com.idlix.tv.ui.screens.series.SeriesScreen
 import com.idlix.tv.ui.screens.settings.SettingsScreen
+import com.idlix.tv.ui.screens.settings.SubtitlePositionEditorScreen
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -26,9 +35,35 @@ import java.nio.charset.StandardCharsets
 fun AppNavigation(
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: Screen.Home.route
+
+    val updateState by AppUpdateManager.state.collectAsState()
+    val showUpdatePrompt by AppUpdateManager.showUpdatePrompt.collectAsState()
+
+    LaunchedEffect(Unit) {
+        AppUpdateManager.checkOnStartup(
+            context = context,
+            platform = AppPlatform.TV,
+            currentVersion = BuildConfig.VERSION_NAME
+        )
+    }
+
+    val readyState = updateState as? AppUpdateState.ReadyToInstall
+    if (showUpdatePrompt && readyState != null) {
+        TvUpdateDialog(
+            latestVersion = readyState.latestVersion,
+            currentVersion = BuildConfig.VERSION_NAME,
+            onInstallNow = {
+                AppUpdateManager.installApk(context, readyState.apkFile)
+            },
+            onDismiss = {
+                AppUpdateManager.dismissUpdatePrompt()
+            }
+        )
+    }
 
     val selectedNavItem = when {
         currentRoute.startsWith("search") -> NavItem.SEARCH
@@ -39,7 +74,7 @@ fun AppNavigation(
         else -> NavItem.HOME
     }
 
-    val isFullScreenRoute = currentRoute.startsWith("player") || currentRoute.startsWith("detail")
+    val isFullScreenRoute = currentRoute.startsWith("player") || currentRoute.startsWith("detail") || currentRoute.startsWith("subtitle_position_editor")
 
     if (isFullScreenRoute) {
         // Render without side drawer
@@ -157,7 +192,17 @@ private fun androidx.navigation.NavGraphBuilder.setupNavRoutes(
     }
 
     composable(Screen.Settings.route) {
-        SettingsScreen()
+        SettingsScreen(
+            onOpenSubtitlePositionEditor = {
+                navController.navigate(Screen.SubtitlePositionEditor.route)
+            }
+        )
+    }
+
+    composable(Screen.SubtitlePositionEditor.route) {
+        SubtitlePositionEditorScreen(
+            onBack = { navController.popBackStack() }
+        )
     }
 
     composable(

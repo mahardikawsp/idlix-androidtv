@@ -22,8 +22,8 @@ android {
         applicationId = "com.idlix.mobile"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 4
+        versionName = "1.0.3"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -84,6 +84,7 @@ android {
 
 dependencies {
     implementation(project(":core:data"))
+    implementation(project(":core:player-ui"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

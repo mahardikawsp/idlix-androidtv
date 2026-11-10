@@ -88,7 +88,7 @@ fun TvNavDrawer(
     }
 
     Box(modifier = modifier.fillMaxSize().background(NetflixBlack)) {
-        // 1. Screen Content: Fixed start padding ensures content never resizes or relayouts during animation
+        // Fixed start padding ensures content does not resize during drawer animations.
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -97,7 +97,6 @@ fun TvNavDrawer(
             content()
         }
 
-        // 2. Scrim overlay when drawer is expanded
         if (isExpanded) {
             Box(
                 modifier = Modifier
@@ -106,7 +105,6 @@ fun TvNavDrawer(
             )
         }
 
-        // 3. Navigation Rail / Drawer: Floating overlay
         Column(
             modifier = Modifier
                 .fillMaxHeight()

@@ -27,27 +27,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.idlix.mobile.R
 import com.idlix.mobile.ui.components.FilterChipRow
 import com.idlix.mobile.ui.components.FilterItem
 import com.idlix.mobile.ui.components.MobileMovieCard
 import com.idlix.mobile.ui.theme.BackgroundDark
 import com.idlix.mobile.ui.theme.IdlixRed
 import com.idlix.mobile.ui.theme.TextWhite
-
-private val SeriesGenres = listOf(
-    FilterItem("all", "All"),
-    FilterItem("action", "Action"),
-    FilterItem("animation", "Animation"),
-    FilterItem("comedy", "Comedy"),
-    FilterItem("crime", "Crime"),
-    FilterItem("drama", "Drama"),
-    FilterItem("mystery", "Mystery"),
-    FilterItem("science-fiction", "Sci-Fi")
-)
 
 @Composable
 fun SeriesScreen(
@@ -56,6 +47,20 @@ fun SeriesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val gridState = rememberLazyGridState()
+
+    val allLabel = stringResource(R.string.filter_all)
+    val seriesGenres = remember(allLabel) {
+        listOf(
+            FilterItem("all", allLabel),
+            FilterItem("action", "Action"),
+            FilterItem("animation", "Animation"),
+            FilterItem("comedy", "Comedy"),
+            FilterItem("crime", "Crime"),
+            FilterItem("drama", "Drama"),
+            FilterItem("mystery", "Mystery"),
+            FilterItem("science-fiction", "Sci-Fi")
+        )
+    }
 
     val shouldLoadMore by remember {
         derivedStateOf {
@@ -80,7 +85,7 @@ fun SeriesScreen(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(
-                text = "TV Series",
+                text = stringResource(R.string.series),
                 color = TextWhite,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -90,7 +95,7 @@ fun SeriesScreen(
             )
 
             FilterChipRow(
-                items = SeriesGenres,
+                items = seriesGenres,
                 selectedId = uiState.selectedGenre,
                 onSelect = { viewModel.selectGenre(it) }
             )

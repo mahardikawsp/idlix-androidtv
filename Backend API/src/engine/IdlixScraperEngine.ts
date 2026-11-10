@@ -1,10 +1,4 @@
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { Browser, Page } from 'puppeteer';
-
-// Add stealth plugin to evade bot/Cloudflare detection
-const puppeteerInstance = (puppeteer as any).default || puppeteer;
-puppeteerInstance.use(StealthPlugin());
+import { connect } from 'puppeteer-real-browser';
 
 export interface ResolvedPlaybackResult {
   title: string;
@@ -16,8 +10,8 @@ export interface ResolvedPlaybackResult {
 
 export class IdlixScraperEngine {
   private static instance: IdlixScraperEngine | null = null;
-  private browser: Browser | null = null;
-  private page: Page | null = null;
+  private browser: any = null;
+  private page: any = null;
   private isReady = false;
   private initPromise: Promise<void> | null = null;
   private baseUrl = process.env.IDLIX_BASE_URL || 'https://z2.idlixku.com';
@@ -40,10 +34,21 @@ export class IdlixScraperEngine {
     }
 
     this.initPromise = (async () => {
-      console.log(`[ScraperEngine] Launching stealth browser to bypass Cloudflare at ${this.baseUrl}...`);
-      try {
-        const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || undefined;
+      console.log(`[ScraperEngine] Launching real-browser stealth engine for Cloudflare bypass at ${this.baseUrl}...`);
 
+      try {
+        const browserArgs = [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-zygote',
+          '--window-size=1920,1080',
+          '--lang=id-ID,id,en-US,en',
+        ];
+
+<<<<<<< HEAD
         const proxyArg = process.env.PROXY_SERVER ? [`--proxy-server=${process.env.PROXY_SERVER}`] : [];
 
         this.browser = await (puppeteerInstance as any).launch({
@@ -62,102 +67,47 @@ export class IdlixScraperEngine {
             '--lang=id-ID,id,en-US,en',
             ...proxyArg,
           ],
+=======
+        // Option A: puppeteer-real-browser with Xvfb virtual display on Linux VPS & SOCKS5 proxy
+        const realBrowser = await (connect as any)({
+          headless: false,
+          turnstile: true,
+          disableXvfb: process.platform !== 'linux',
+          args: browserArgs,
+>>>>>>> db85e1746165ff72654fceea92d9b5ab2d59057d
         });
 
-        const pages = await this.browser!.pages();
-        this.page = pages.length > 0 ? pages[0] : await this.browser!.newPage();
+        this.browser = realBrowser.browser;
+        this.page = realBrowser.page;
 
-        await this.page.setViewport({ width: 1920, height: 1080 });
+        // Block heavy external ads only, never block challenge resources
+        try {
+          await this.page.setRequestInterception(true);
+          this.page.on('request', (req: any) => {
+            const url = req.url();
+            const adBlock = ['xyzchat', 'doubleclick', 'google-analytics', 'analytics.google.com'];
 
-        // Advanced stealth: mask navigator.webdriver and chrome runtime signatures
-        await this.page.evaluateOnNewDocument(() => {
-          Object.defineProperty(navigator, 'webdriver', {
-            get: () => undefined,
+            if (adBlock.some((d) => url.includes(d))) {
+              req.abort();
+            } else {
+              req.continue();
+            }
           });
-          (window as any).chrome = {
-            runtime: {},
-            loadTimes: () => {},
-            csi: () => {},
-            app: {},
-          };
-        });
+        } catch (_) {}
 
-        await this.page.setUserAgent(
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
-        );
-
-        await this.page.setExtraHTTPHeaders({
-          'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
-          'Sec-Ch-Ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
-          'Sec-Ch-Ua-Mobile': '?0',
-          'Sec-Ch-Ua-Platform': '"Windows"',
-        });
-
-        // Recommendation 1: Never block fonts, images, or Cloudflare challenge assets during initialization
-        // Only block heavy third-party tracking/ad domains to prevent interference with Turnstile profiling
-        await this.page.setRequestInterception(true);
-        this.page.on('request', (req) => {
-          const url = req.url();
-          const adBlock = ['xyzchat', 'doubleclick', 'google-analytics', 'analytics.google.com'];
-
-          if (adBlock.some((d) => url.includes(d))) {
-            req.abort();
-          } else {
-            req.continue();
-          }
-        });
-
-        console.log(`[ScraperEngine] Navigating to ${this.baseUrl} to solve challenge...`);
+        console.log(`[ScraperEngine] Navigating to ${this.baseUrl} to solve Cloudflare challenge...`);
         await this.page.goto(this.baseUrl, {
           waitUntil: 'domcontentloaded',
-          timeout: 45000,
+          timeout: 60000,
         });
 
-        // Recommendation 2: Cloudflare Turnstile detection & auto-solving
-        const isChallengeActive = async () => {
-          try {
-            const title = (await this.page!.title()).toLowerCase();
-            return title.includes('just a moment') || title.includes('attention required');
-          } catch (_) {
-            return false;
-          }
-        };
-
-        if (await isChallengeActive()) {
-          console.log('[ScraperEngine] Cloudflare challenge detected, monitoring Turnstile resolution...');
-
-          // Give Turnstile up to 30s to solve automatically or attempt interaction
-          for (let attempt = 1; attempt <= 15; attempt++) {
-            await new Promise((r) => setTimeout(r, 2000));
-
-            if (!(await isChallengeActive())) {
-              break;
-            }
-
-            try {
-              const frames = this.page!.frames();
-              for (const frame of frames) {
-                if (frame.url().includes('challenges.cloudflare.com')) {
-                  const checkbox = await frame.$(
-                    'input[type="checkbox"], .ctp-checkbox-label, #challenge-stage, .mark'
-                  );
-                  if (checkbox) {
-                    console.log(`[ScraperEngine] Attempting interaction with Turnstile widget (attempt ${attempt})...`);
-                    await checkbox.click().catch(() => {});
-                  }
-                }
-              }
-            } catch (_) {}
-          }
-        }
-
-        // Wait until Cloudflare challenge passes
+        console.log('[ScraperEngine] Waiting for Cloudflare Turnstile verification...');
         await this.page.waitForFunction(
           () => {
             const title = document.title.toLowerCase();
             return !title.includes('just a moment') && !title.includes('attention required');
           },
-          { timeout: 35000 }
+          { timeout: 45000 }
         );
 
         console.log(`[ScraperEngine] Cloudflare challenge bypassed successfully! Page Title: "${await this.page.title()}"`);
@@ -165,6 +115,13 @@ export class IdlixScraperEngine {
       } catch (err: any) {
         console.error(`[ScraperEngine] Failed to initialize browser session: ${err?.message || err}`);
         this.isReady = false;
+        if (this.browser) {
+          try {
+            await this.browser.close();
+          } catch (_) {}
+          this.browser = null;
+          this.page = null;
+        }
         throw err;
       } finally {
         this.initPromise = null;
@@ -201,7 +158,12 @@ export class IdlixScraperEngine {
 
     try {
       const result = await this.page.evaluate(
-        async (fetchUrl, fetchMethod, fetchBody, fetchHeaders) => {
+        async (
+          fetchUrl: string,
+          fetchMethod: string,
+          fetchBody: any,
+          fetchHeaders: Record<string, string>
+        ) => {
           try {
             const res = await fetch(fetchUrl, {
               method: fetchMethod,

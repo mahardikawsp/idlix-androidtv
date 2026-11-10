@@ -72,7 +72,6 @@ fun HomeScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                // 1. Dynamic Hero Billboard
                 item {
                     TvHeroBillboard(
                         movie = uiState.heroMovie,
@@ -103,7 +102,6 @@ fun HomeScreen(
                     )
                 }
 
-                // 2. Bar Paling Pertama: Lanjutkan Menonton (hanya muncul jika ada histori yang belum kelar)
                 if (uiState.continueWatching.isNotEmpty()) {
                     item {
                         TvContinueWatchingRow(
@@ -125,7 +123,6 @@ fun HomeScreen(
                     }
                 }
 
-                // 3. Swimlane: Sedang Tren Sekarang
                 item {
                     TvSwimlaneRow(
                         title = stringResource(R.string.trending_now),
@@ -134,7 +131,6 @@ fun HomeScreen(
                     )
                 }
 
-                // 4. Swimlane: Film Terpopuler
                 item {
                     TvSwimlaneRow(
                         title = stringResource(R.string.top_10_movies),
@@ -143,7 +139,6 @@ fun HomeScreen(
                     )
                 }
 
-                // 5. Swimlane: Serial TV Pilihan
                 item {
                     val seriesAsMovies = remember(uiState.popularSeries) {
                         uiState.popularSeries.map { s ->
@@ -165,7 +160,6 @@ fun HomeScreen(
                     )
                 }
 
-                // 6. Swimlane: Film Aksi
                 if (uiState.actionMovies.isNotEmpty()) {
                     item {
                         TvSwimlaneRow(

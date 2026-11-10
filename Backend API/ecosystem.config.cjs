@@ -12,7 +12,7 @@ module.exports = {
         PORT: 5376,
         HOST: '0.0.0.0',
         IDLIX_BASE_URL: 'https://z2.idlixku.com',
-        LOG_LEVEL: 'info',
+        LOG_LEVEL: 'info'
       },
     },
   ],

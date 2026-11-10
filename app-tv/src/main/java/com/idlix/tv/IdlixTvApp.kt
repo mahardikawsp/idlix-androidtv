@@ -6,6 +6,7 @@ import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.idlix.data.api.ApiClient
+import com.idlix.data.local.PlayerAppearanceStore
 import kotlinx.coroutines.Dispatchers
 
 class IdlixTvApp : Application(), ImageLoaderFactory {
@@ -14,6 +15,7 @@ class IdlixTvApp : Application(), ImageLoaderFactory {
         super.onCreate()
         appContext = this
         ApiClient.init(this, "IdlixTV-Client/1.0 (Android TV)")
+        PlayerAppearanceStore.init(this)
     }
 
     override fun newImageLoader(): ImageLoader {

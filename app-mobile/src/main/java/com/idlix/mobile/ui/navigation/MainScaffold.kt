@@ -9,19 +9,53 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.idlix.data.update.AppPlatform
+import com.idlix.data.update.AppUpdateManager
+import com.idlix.data.update.AppUpdateState
+import com.idlix.mobile.BuildConfig
+import com.idlix.mobile.ui.components.MobileUpdateDialog
 import com.idlix.mobile.ui.theme.BackgroundDark
 
 @Composable
 fun MainScaffold(
     navController: NavHostController = rememberNavController()
 ) {
+    val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val updateState by AppUpdateManager.state.collectAsState()
+    val showUpdatePrompt by AppUpdateManager.showUpdatePrompt.collectAsState()
+
+    LaunchedEffect(Unit) {
+        AppUpdateManager.checkOnStartup(
+            context = context,
+            platform = AppPlatform.MOBILE,
+            currentVersion = BuildConfig.VERSION_NAME
+        )
+    }
+
+    val readyState = updateState as? AppUpdateState.ReadyToInstall
+    if (showUpdatePrompt && readyState != null) {
+        MobileUpdateDialog(
+            latestVersion = readyState.latestVersion,
+            currentVersion = BuildConfig.VERSION_NAME,
+            onInstallNow = {
+                AppUpdateManager.installApk(context, readyState.apkFile)
+            },
+            onDismiss = {
+                AppUpdateManager.dismissUpdatePrompt()
+            }
+        )
+    }
 
     // Tampilkan BottomBar hanya di top-level bottom nav routes
     val showBottomBar = BottomNavItem.items.any { it.route == currentRoute }

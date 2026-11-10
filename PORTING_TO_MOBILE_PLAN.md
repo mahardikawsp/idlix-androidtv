@@ -299,7 +299,11 @@ android {
     defaultConfig {
         minSdk = 24
         
+<<<<<<< HEAD
         val backendUrl = "https://halakios.com/idix-api/"
+=======
+        val backendUrl = "https://z2.idlixku.com/"
+>>>>>>> db85e1746165ff72654fceea92d9b5ab2d59057d
         buildConfigField("String", "BACKEND_API_URL", "\"$backendUrl\"")
     }
 

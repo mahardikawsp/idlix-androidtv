@@ -75,6 +75,7 @@ import com.idlix.mobile.R
 import com.idlix.mobile.ui.screens.detail.components.MobilePlayerView
 import com.idlix.mobile.ui.screens.detail.components.SubtitleModalBottomSheet
 import com.idlix.mobile.ui.screens.detail.components.findActivity
+import com.idlix.mobile.ui.screens.settings.SubtitlePositionEditorScreen
 import com.idlix.mobile.ui.theme.BackgroundDark
 import com.idlix.mobile.ui.theme.BackgroundElevated
 import com.idlix.mobile.ui.theme.GoldStar
@@ -96,6 +97,7 @@ fun DetailScreen(
     var isFullscreen by rememberSaveable { mutableStateOf(false) }
     var isOverviewExpanded by remember { mutableStateOf(false) }
     var isBookmarked by rememberSaveable { mutableStateOf(false) }
+    var isEditingPosition by remember { mutableStateOf(false) }
 
     val activity = remember(context) { context.findActivity() }
 
@@ -131,9 +133,13 @@ fun DetailScreen(
         }
     }
 
-    // Intercept Back Press: If fullscreen, exit fullscreen; if inline, pop back to previous screen
-    BackHandler(enabled = isFullscreen) {
-        isFullscreen = false
+    // Intercept Back Press: If editing position, close editor; if fullscreen, exit fullscreen; if inline, pop back
+    BackHandler(enabled = isEditingPosition || isFullscreen) {
+        if (isEditingPosition) {
+            isEditingPosition = false
+        } else {
+            isFullscreen = false
+        }
     }
 
     val title = uiState.movie?.title ?: uiState.series?.title ?: ""
@@ -399,7 +405,7 @@ fun DetailScreen(
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            text = if (isBookmarked) "Di Daftar Saya" else stringResource(R.string.my_list),
+                                            text = if (isBookmarked) stringResource(R.string.in_my_list) else stringResource(R.string.my_list),
                                             color = TextWhite,
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.Medium
@@ -414,12 +420,14 @@ fun DetailScreen(
                                         .weight(1f)
                                         .clip(RoundedCornerShape(8.dp))
                                         .clickable {
+                                            val shareTitle = context.getString(R.string.share)
+                                            val shareText = context.getString(R.string.share_movie_text, title, "https://idlixku.com/$contentType/$slug")
                                             val sendIntent = Intent().apply {
                                                 action = Intent.ACTION_SEND
-                                                putExtra(Intent.EXTRA_TEXT, "Watch $title on IDLIX: https://idlixku.com/$contentType/$slug")
+                                                putExtra(Intent.EXTRA_TEXT, shareText)
                                                 type = "text/plain"
                                             }
-                                            context.startActivity(Intent.createChooser(sendIntent, "Share"))
+                                            context.startActivity(Intent.createChooser(sendIntent, shareTitle))
                                         }
                                 ) {
                                     Row(
@@ -435,7 +443,7 @@ fun DetailScreen(
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            text = "Bagikan",
+                                            text = stringResource(R.string.share),
                                             color = TextWhite,
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.Medium
@@ -604,12 +612,42 @@ fun DetailScreen(
             isSubtitleEnabled = uiState.isSubtitleEnabled,
             subdlSubtitles = uiState.subdlSubtitles,
             isSearchingSubdl = uiState.isSearchingSubdl,
+            subdlCandidates = uiState.subdlCandidates,
+            subdlError = uiState.subdlError,
+            subdlActiveQuery = uiState.subdlActiveQuery,
+            isManualSearchOpen = uiState.isManualSearchOpen,
+            manualTitle = uiState.manualTitle,
+            manualYear = uiState.manualYear,
+            manualSeason = uiState.manualSeason,
+            manualEpisode = uiState.manualEpisode,
+            isUsingSessionOverride = uiState.isUsingSessionOverride,
+            isSeries = uiState.series != null,
             onToggleSubtitle = { viewModel.toggleSubtitle() },
             onSelectTrack = { viewModel.selectSubtitleTrack(it) },
             onSelectSubdl = { viewModel.selectSubdlSubtitle(it) {} },
             onSearchSubdl = { viewModel.searchSubdlSubtitles() },
+            onOpenManualSearch = { viewModel.openManualSearch() },
+            onCloseManualSearch = { viewModel.closeManualSearch() },
+            onManualTitleChange = { viewModel.updateManualTitle(it) },
+            onManualYearChange = { viewModel.updateManualYear(it) },
+            onManualSeasonChange = { viewModel.updateManualSeason(it) },
+            onManualEpisodeChange = { viewModel.updateManualEpisode(it) },
+            onSubmitManualSearch = { viewModel.submitManualSearch() },
+            onSelectCandidate = { viewModel.selectSubdlCandidate(it) },
+            onRestoreOriginalTitle = { viewModel.restoreOriginalTitle() },
+            onOpenPositionEditor = {
+                viewModel.closeSubtitlePicker()
+                isEditingPosition = true
+            },
             onDismiss = { viewModel.closeSubtitlePicker() }
         )
+
+        // Fullscreen in-player position editor overlay
+        if (isEditingPosition) {
+            SubtitlePositionEditorScreen(
+                onBack = { isEditingPosition = false }
+            )
+        }
     }
 }
 

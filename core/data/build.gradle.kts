@@ -21,7 +21,11 @@ android {
     defaultConfig {
         minSdk = 24
 
+<<<<<<< HEAD
         val backendUrl = localProperties.getProperty("backendApiUrl") ?: "http://192.168.60.48:5376/"
+=======
+        val backendUrl = localProperties.getProperty("backendApiUrl") ?: "https://z2.idlixku.com/"
+>>>>>>> db85e1746165ff72654fceea92d9b5ab2d59057d
         buildConfigField("String", "BACKEND_API_URL", "\"$backendUrl\"")
     }
 
@@ -37,6 +41,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -48,6 +56,7 @@ dependencies {
     implementation(libs.retrofit.kotlinx.serialization)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.okhttp.dnsoverhttps)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
 

@@ -26,9 +26,19 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 
 class IdlixRepository(
-    private val idlixApi: IdlixApiService = ApiClient.idlixApi,
-    private val majorplayApi: MajorplayApiService = ApiClient.majorplayApi
+    private val idlixApiProvider: () -> IdlixApiService = { ApiClient.idlixApi },
+    private val majorplayApiProvider: () -> MajorplayApiService = { ApiClient.majorplayApi }
 ) {
+    constructor(
+        idlixApi: IdlixApiService,
+        majorplayApi: MajorplayApiService
+    ) : this(
+        idlixApiProvider = { idlixApi },
+        majorplayApiProvider = { majorplayApi }
+    )
+
+    private val idlixApi: IdlixApiService get() = idlixApiProvider()
+    private val majorplayApi: MajorplayApiService get() = majorplayApiProvider()
 
     suspend fun getMovies(
         page: Int = 1,
@@ -191,14 +201,14 @@ class IdlixRepository(
     ): Result<ResolvedPlayback> = withContext(Dispatchers.IO) {
         val cacheKey = "$contentType:$contentId"
 
-        // 1. Instant hit: Already cached in memory
+        // In-memory cache hit
         val cached = playbackCache[cacheKey]
         if (cached != null && (System.currentTimeMillis() - cached.timestamp) < CACHE_TTL_MS) {
             onCountdown?.invoke(0)
             return@withContext Result.success(cached.playback)
         }
 
-        // 2. Pre-warming hit: Already resolving in background
+        // Await background pre-warming resolution if ongoing
         val ongoing = activePrewarms[cacheKey]
         if (ongoing != null) {
             try {
@@ -210,7 +220,6 @@ class IdlixRepository(
             } catch (e: Exception) {}
         }
 
-        // 3. Fallback to standard resolution
         val res = resolveStreamInternal(contentType, contentId, contentTitle, onCountdown)
         res.onSuccess { resolved ->
             playbackCache[cacheKey] = CachedPlayback(resolved)
@@ -260,7 +269,7 @@ class IdlixRepository(
                 }
             }
 
-            // Step 1: Get play-info (gateToken + unlockAt) from backend API
+            // Fetch gate token and unlock schedule
             val playInfo: PlayInfoResponse = if (targetType == "episode") {
                 idlixApi.getEpisodePlayInfo(targetId)
             } else {
@@ -271,15 +280,15 @@ class IdlixRepository(
                 return@withContext Result.failure(Exception("Gagal memperoleh token pemutaran"))
             }
 
-            // Step 2: Server-synchronized countdown
+            // Server-synchronized countdown until gate unlocks
             val diffMs = if (playInfo.serverNow > 0 && playInfo.unlockAt > playInfo.serverNow) {
                 playInfo.unlockAt - playInfo.serverNow
             } else {
                 15000L
             }
 
-            // Extract owner device ID from gateToken to construct valid session cookie
-            val didMatch = try {
+            // Resolve session device ID (fallback to ApiClient device ID if gateToken v2 does not expose owner)
+            val didFromToken = try {
                 val rawP0 = playInfo.gateToken.split(".")[0]
                 val decodedBytes = try {
                     java.util.Base64.getUrlDecoder().decode(rawP0)
@@ -291,7 +300,8 @@ class IdlixRepository(
             } catch (e: Exception) {
                 null
             }
-            val didCookie = if (!didMatch.isNullOrBlank()) "did=$didMatch" else null
+            val activeDid = if (!didFromToken.isNullOrBlank()) didFromToken else ApiClient.getDeviceId()
+            val didCookie = "did=$activeDid"
 
             var secondsLeft = (diffMs / 1000).toInt()
             while (secondsLeft > 1) {
@@ -303,7 +313,7 @@ class IdlixRepository(
                 onCountdown?.invoke(1)
             }
 
-            // Step 3: Claim session with retry polling via Backend API
+            // Poll session claim until unlocked
             var validClaimRes: com.idlix.data.model.ClaimResponse? = null
 
             for (attempt in 1..15) {
@@ -327,7 +337,7 @@ class IdlixRepository(
                 return@withContext Result.failure(Exception("Gagal mengklaim sesi pemutaran. Silakan coba lagi."))
             }
 
-            // Step 4: Redeem HLS URL from majorplay CDN
+            // Redeem final HLS playback URL
             val redeemUrl = claimRes.redeemUrl.ifBlank { "https://e2e.majorplay.net/api/play" }
             val redeemRes = try {
                 majorplayApi.redeemPlay(
@@ -343,16 +353,18 @@ class IdlixRepository(
             }
 
             val finalSubtitles = redeemRes.subtitles.toMutableList()
-            val hasIndoSub = finalSubtitles.any { it.lang == "id" }
+            val prefLang = com.idlix.data.util.LocaleHelper.getPreferredLanguage()
+            val hasPrefSub = finalSubtitles.any { it.lang.equals(prefLang, ignoreCase = true) }
 
             // SubDL Third-party Subtitle Fallback:
-            // If the content has no Indonesian subtitle (or no subtitles at all), fetch from subdl.com
-            if (!hasIndoSub) {
+            // If the content has no subtitle matching preferred device language (Indonesian or English fallback), fetch from subdl.com
+            if (!hasPrefSub) {
                 try {
                     val subdlSub = ApiClient.applicationContext?.let { ctx ->
-                        SubdlRepository.fetchIndonesianSubtitle(
+                        SubdlRepository.fetchSubtitleForLanguage(
                             title = contentTitle,
                             type = if (targetType == "episode") "tv" else "movie",
+                            targetLang = prefLang,
                             context = ctx
                         )
                     }

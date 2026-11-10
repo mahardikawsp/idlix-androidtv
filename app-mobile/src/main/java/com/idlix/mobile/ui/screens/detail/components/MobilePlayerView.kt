@@ -64,6 +64,9 @@ import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.idlix.data.model.ResolvedPlayback
 import com.idlix.data.model.SubtitleTrack
+import com.idlix.data.local.PlayerAppearanceStore
+import com.idlix.player.ui.SubtitleOverlay
+import com.idlix.player.ui.rememberPlayerCues
 import com.idlix.mobile.R
 import com.idlix.mobile.player.MediaSourceHelper
 import com.idlix.mobile.player.PipController
@@ -111,6 +114,7 @@ fun MobilePlayerView(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val isInPipMode by PipController.isInPipMode.collectAsState()
+    val appearance by PlayerAppearanceStore.appearance.collectAsState()
 
     var showControls by remember { mutableStateOf(true) }
     var currentPosMs by remember { mutableLongStateOf(0L) }
@@ -143,7 +147,7 @@ fun MobilePlayerView(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color(appearance.backgroundColor))
     ) {
         if (isStreamLoading) {
             IconButton(
@@ -256,8 +260,10 @@ fun MobilePlayerView(
                         )
                         setMediaSource(mediaSource)
 
+                        val prefLang = com.idlix.data.util.LocaleHelper.getPreferredLanguage()
+                        val targetLang = activeSub?.lang ?: prefLang
                         trackSelectionParameters = trackSelectionParameters.buildUpon()
-                            .setPreferredTextLanguage("id")
+                            .setPreferredTextLanguage(targetLang)
                             .setSelectUndeterminedTextLanguage(true)
                             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, !isSubtitleEnabled)
                             .build()
@@ -345,6 +351,8 @@ fun MobilePlayerView(
                 }
             }
 
+            val cues by rememberPlayerCues(exoPlayer)
+
             // ExoPlayer AndroidView
             AndroidView(
                 factory = { ctx ->
@@ -352,15 +360,24 @@ fun MobilePlayerView(
                         player = exoPlayer
                         useController = false
                         keepScreenOn = true
-                        subtitleView?.apply {
-                            setUserDefaultStyle()
-                            setUserDefaultTextSize()
-                            setBottomPaddingFraction(0.08f)
-                        }
+                        setShutterBackgroundColor(appearance.backgroundColor)
+                        subtitleView?.visibility = android.view.View.GONE
                     }
+                },
+                update = { view ->
+                    view.setShutterBackgroundColor(appearance.backgroundColor)
                 },
                 modifier = Modifier.fillMaxSize()
             )
+
+            // Custom Subtitle Overlay with free positioning & user appearance
+            if (isSubtitleEnabled) {
+                SubtitleOverlay(
+                    cues = cues,
+                    appearance = appearance,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
             // Touch Gestures Layer (Single tap, Double tap seek, Vertical Drag for Brightness & Volume)
             if (!isInPipMode) {

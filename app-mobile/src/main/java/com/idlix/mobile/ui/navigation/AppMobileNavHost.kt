@@ -18,6 +18,7 @@ import com.idlix.mobile.ui.screens.movies.MoviesScreen
 import com.idlix.mobile.ui.screens.search.SearchScreen
 import com.idlix.mobile.ui.screens.series.SeriesScreen
 import com.idlix.mobile.ui.screens.settings.SettingsScreen
+import com.idlix.mobile.ui.screens.settings.SubtitlePositionEditorScreen
 
 @Composable
 fun AppMobileNavHost(
@@ -29,7 +30,6 @@ fun AppMobileNavHost(
         startDestination = MobileScreen.Home.route,
         modifier = modifier
     ) {
-        // 1. Home
         composable(
             route = MobileScreen.Home.route,
             enterTransition = { fadeIn(animationSpec = tween(300)) },
@@ -45,7 +45,6 @@ fun AppMobileNavHost(
             )
         }
 
-        // 2. Movies
         composable(
             route = MobileScreen.Movies.route,
             enterTransition = { fadeIn(animationSpec = tween(300)) },
@@ -58,7 +57,6 @@ fun AppMobileNavHost(
             )
         }
 
-        // 3. Series
         composable(
             route = MobileScreen.Series.route,
             enterTransition = { fadeIn(animationSpec = tween(300)) },
@@ -71,7 +69,6 @@ fun AppMobileNavHost(
             )
         }
 
-        // 4. Search
         composable(
             route = MobileScreen.Search.route,
             enterTransition = { fadeIn(animationSpec = tween(300)) },
@@ -84,7 +81,6 @@ fun AppMobileNavHost(
             )
         }
 
-        // 5. Library (Continue Watching & Bookmarks)
         composable(
             route = MobileScreen.Library.route,
             enterTransition = { fadeIn(animationSpec = tween(300)) },
@@ -100,7 +96,6 @@ fun AppMobileNavHost(
             )
         }
 
-        // 6. Detail (Inline Player + Content info)
         composable(
             route = MobileScreen.Detail.route,
             arguments = listOf(
@@ -129,7 +124,6 @@ fun AppMobileNavHost(
             )
         }
 
-        // 7. Settings
         composable(
             route = MobileScreen.Settings.route,
             enterTransition = {
@@ -146,7 +140,20 @@ fun AppMobileNavHost(
             }
         ) {
             SettingsScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onOpenSubtitlePositionEditor = {
+                    navController.navigate(MobileScreen.SubtitlePositionEditor.route)
+                }
+            )
+        }
+
+        composable(
+            route = MobileScreen.SubtitlePositionEditor.route,
+            enterTransition = { fadeIn(tween(250)) },
+            exitTransition = { fadeOut(tween(250)) }
+        ) {
+            SubtitlePositionEditorScreen(
+                onBack = { navController.popBackStack() }
             )
         }
     }
