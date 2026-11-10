@@ -7,19 +7,18 @@ services:
       dockerfile: Dockerfile
     container_name: idlix-backend-api
     restart: unless-stopped
-    ports:
-      - "5376:5376"
+    # Gunakan network host agar container bisa mengakses SOCKS5 proxy 127.0.0.1:40000 di VPS
+    network_mode: "host"
     environment:
       - PORT=5376
       - HOST=0.0.0.0
       - IDLIX_BASE_URL=https://z2.idlixku.com
       - LOG_LEVEL=info
-    # Cap memory usage so it never hogs the VPS
+      - PROXY_SERVER=socks5://127.0.0.1:40000
     deploy:
       resources:
         limits:
           memory: 1024M
         reservations:
           memory: 256M
-    # Optional shared memory volume for Chromium performance
     shm_size: '256mb'

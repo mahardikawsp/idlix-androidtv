@@ -43,6 +43,7 @@ export class IdlixScraperEngine {
       console.log(`[ScraperEngine] Launching stealth browser to bypass Cloudflare at ${this.baseUrl}...`);
       try {
         const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || undefined;
+        const proxyArg = process.env.PROXY_SERVER ? [`--proxy-server=${process.env.PROXY_SERVER}`] : [];
 
         this.browser = await (puppeteerInstance as any).launch({
           headless: true,
@@ -58,6 +59,7 @@ export class IdlixScraperEngine {
             '--disable-blink-features=AutomationControlled',
             '--window-size=1920,1080',
             '--lang=id-ID,id,en-US,en',
+            ...proxyArg,
           ],
         });
 
