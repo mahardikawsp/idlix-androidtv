@@ -5,6 +5,15 @@ import { globalCache } from '../services/CacheService.js';
 export const apiRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   const engine = IdlixScraperEngine.getInstance();
 
+  // Root Status
+  fastify.get('/', async () => {
+    return {
+      status: 'ok',
+      service: 'idlix-backend-api',
+      session: engine.getSessionStatus(),
+    };
+  });
+
   // Health and Status
   fastify.get('/health', async () => {
     return {

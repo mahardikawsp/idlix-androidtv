@@ -21,17 +21,17 @@ android {
     defaultConfig {
         minSdk = 24
 
-        val backendUrl = localProperties.getProperty("backendApiUrl") ?: "https://streamapi.abdiworks.my.id/"
+        val backendUrl = localProperties.getProperty("backendApiUrl") ?: "http://192.168.60.48:5376/"
         buildConfigField("String", "BACKEND_API_URL", "\"$backendUrl\"")
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
     }
 
     buildFeatures {

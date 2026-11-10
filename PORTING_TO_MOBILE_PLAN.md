@@ -299,7 +299,7 @@ android {
     defaultConfig {
         minSdk = 24
         
-        val backendUrl = "https://streamapi.abdiworks.my.id/"
+        val backendUrl = "https://halakios.com/idix-api/"
         buildConfigField("String", "BACKEND_API_URL", "\"$backendUrl\"")
     }
 

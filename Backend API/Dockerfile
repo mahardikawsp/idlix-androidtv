@@ -1,10 +1,23 @@
-# Base Node.js 22 Slim with official Debian packages
+# Stage 1: Build TypeScript
+FROM node:22-slim AS builder
+
+WORKDIR /app
+
+COPY package*.json tsconfig.json ./
+RUN npm ci
+
+COPY src ./src
+RUN npm run build
+
+# Stage 2: Production Runner
 FROM node:22-slim
 
-# Install latest Chromium and required dependencies for headless browser execution
+# Install required system dependencies for headless Chrome execution + unzip
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-      chromium \
+      unzip \
+      curl \
+      ca-certificates \
       fonts-liberation \
       fonts-noto-color-emoji \
       libasound2 \
@@ -38,28 +51,28 @@ RUN apt-get update \
       libxrender1 \
       libxss1 \
       libxtst6 \
-      ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Tell Puppeteer to use the system installed Chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
-    NODE_ENV=production \
+ENV NODE_ENV=production \
     PORT=5376 \
-    HOST=0.0.0.0
+    HOST=0.0.0.0 \
+    PUPPETEER_CACHE_DIR=/home/pptruser/.cache/puppeteer
 
 WORKDIR /app
 
-# Copy package descriptors first to leverage docker layer caching
+# Copy package descriptors & install production dependencies only
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-# Copy built files
-COPY dist ./dist
+# Download Google Chrome resmi via Puppeteer (unzip sekarang sudah tersedia)
+RUN npx puppeteer browsers install chrome
 
-# Create a non-root user for security
-RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
-    && mkdir -p /home/pptruser/Downloads \
+# Copy built files from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Create a non-root user for security & assign permissions to Chrome cache
+RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video -m pptruser \
+    && mkdir -p /home/pptruser/Downloads /home/pptruser/.cache \
     && chown -R pptruser:pptruser /home/pptruser \
     && chown -R pptruser:pptruser /app
 
