@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" width="390" height="844" style="background:#141414;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="bgGradM" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141414"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="heroM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0.2"/>
+      <stop offset="60%" stop-color="#141414" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="posterM1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#7f1d1d"/></linearGradient>
+    <linearGradient id="posterM2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#78350f"/></linearGradient>
+    <linearGradient id="posterM3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e1b4b"/></linearGradient>
+    <linearGradient id="posterM4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#064e3b"/></linearGradient>
+    <linearGradient id="posterM5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#312e81"/></linearGradient>
+    <linearGradient id="posterM6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d48"/><stop offset="100%" stop-color="#881337"/></linearGradient>
+    <filter id="mShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    </defs>
+  <rect width="390" height="844" rx="40" fill="url(#bgGradM)"/>
+
+  <!-- Top App Bar -->
+  <g transform="translate(16, 54)">
+    <text x="0" y="24" fill="#FFFFFF" font-size="20" font-weight="bold">← Pengaturan</text>
+  </g>
+
+  <!-- Settings Groups List -->
+  <g transform="translate(16, 96)">
+    
+    <!-- Group 1: Backend API -->
+    <text x="0" y="12" fill="#E50914" font-size="11" font-weight="bold" letter-spacing="0.5">SERVER &amp; KONEKSI API</text>
+    <g transform="translate(0, 22)">
+      <rect x="0" y="0" width="358" height="90" rx="10" fill="#1C1C1C" stroke="#282828"/>
+      <text x="14" y="24" fill="#FFFFFF" font-size="13" font-weight="bold">Alamat Backend API</text>
+      <rect x="14" y="34" width="330" height="26" rx="4" fill="#121212"/>
+      <text x="22" y="52" fill="#22c55e" font-size="11" font-weight="bold">https://halakios.com/idix-api/</text>
+      
+      <g transform="translate(14, 66)">
+        <text x="0" y="14" fill="#22c55e" font-size="10" font-weight="bold">🟢 Terhubung ke Cloudflare Bypass</text>
+        <text x="250" y="14" fill="#E50914" font-size="10" font-weight="bold">UJI KONEKSI</text>
+      </g>
+    </g>
+
+    <!-- Group 2: Subtitle Settings -->
+    <g transform="translate(0, 130)">
+      <text x="0" y="12" fill="#E50914" font-size="11" font-weight="bold" letter-spacing="0.5">PENGATURAN SUBTITLE</text>
+      <g transform="translate(0, 22)">
+        <rect x="0" y="0" width="358" height="150" rx="10" fill="#1C1C1C" stroke="#282828"/>
+        
+        <!-- Row 1: SubDL Integration -->
+        <text x="14" y="24" fill="#FFFFFF" font-size="13" font-weight="bold">Integrasi Subtitle SubDL</text>
+        <text x="14" y="40" fill="#888888" font-size="11">Unduh subtitle multi-bahasa otomatis</text>
+        <text x="280" y="32" fill="#22c55e" font-size="11" font-weight="bold">Aktif ✓</text>
+        <line x1="14" y1="52" x2="344" y2="52" stroke="#262626" stroke-width="1"/>
+
+        <!-- Row 2: Subtitle Color -->
+        <g transform="translate(14, 64)">
+          <text x="0" y="16" fill="#FFFFFF" font-size="13">Warna Subtitle</text>
+          <rect x="250" y="2" width="60" height="20" rx="10" fill="#333333"/>
+          <circle cx="260" cy="12" r="5" fill="#FFD700"/>
+          <text x="272" y="16" fill="#FFD700" font-size="11" font-weight="bold">Kuning</text>
+        </g>
+        <line x1="14" y1="100" x2="344" y2="100" stroke="#262626" stroke-width="1"/>
+
+        <!-- Row 3: Visual Position Editor -->
+        <g transform="translate(14, 112)">
+          <text x="0" y="16" fill="#FFFFFF" font-size="13">Editor Posisi &amp; Ukuran Subtitle</text>
+          <text x="310" y="16" fill="#888888" font-size="14">→</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Group 3: Video Player -->
+    <g transform="translate(0, 320)">
+      <text x="0" y="12" fill="#E50914" font-size="11" font-weight="bold" letter-spacing="0.5">PEMUTAR VIDEO (EXOPLAYER)</text>
+      <g transform="translate(0, 22)">
+        <rect x="0" y="0" width="358" height="140" rx="10" fill="#1C1C1C" stroke="#282828"/>
+        
+        <!-- Toggle 1: PiP -->
+        <text x="14" y="24" fill="#FFFFFF" font-size="13" font-weight="bold">Picture-in-Picture (PiP)</text>
+        <text x="14" y="38" fill="#888888" font-size="10">Otomatis floating saat keluar aplikasi</text>
+        <!-- Toggle ON -->
+        <rect x="290" y="18" width="44" height="24" rx="12" fill="#E50914"/>
+        <circle cx="322" cy="30" r="9" fill="#FFFFFF"/>
+        <line x1="14" y1="50" x2="344" y2="50" stroke="#262626" stroke-width="1"/>
+
+        <!-- Toggle 2: Auto Next Episode -->
+        <g transform="translate(14, 60)">
+          <text x="0" y="14" fill="#FFFFFF" font-size="13" font-weight="bold">Otomatis Episode Berikutnya</text>
+          <text x="0" y="28" fill="#888888" font-size="10">Putar episode berikutnya setelah selesai</text>
+          <rect x="276" y="8" width="44" height="24" rx="12" fill="#E50914"/>
+          <circle cx="308" cy="20" r="9" fill="#FFFFFF"/>
+        </g>
+        <line x1="14" y1="96" x2="344" y2="96" stroke="#262626" stroke-width="1"/>
+
+        <!-- Hardware Decoder -->
+        <g transform="translate(14, 108)">
+          <text x="0" y="14" fill="#FFFFFF" font-size="13">Hardware Codec Acceleration</text>
+          <text x="270" y="14" fill="#22c55e" font-size="11" font-weight="bold">MediaCodec ✓</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Group 4: App Update & Version -->
+    <g transform="translate(0, 500)">
+      <text x="0" y="12" fill="#E50914" font-size="11" font-weight="bold" letter-spacing="0.5">TENTANG APLIKASI</text>
+      <g transform="translate(0, 22)">
+        <rect x="0" y="0" width="358" height="96" rx="10" fill="#1C1C1C" stroke="#282828"/>
+        <text x="14" y="24" fill="#FFFFFF" font-size="13" font-weight="bold">IDLIX for Android Mobile</text>
+        <text x="14" y="42" fill="#888888" font-size="11">Versi 1.0.3 (Build 4) • Jetpack Compose M3</text>
+        
+        <g transform="translate(14, 56)">
+          <rect x="0" y="0" width="150" height="28" rx="6" fill="#E50914"/>
+          <text x="75" y="18" fill="#FFFFFF" font-size="11" font-weight="bold" text-anchor="middle">Cek Pembaruan APK</text>
+          <text x="165" y="18" fill="#22c55e" font-size="11">✓ Versi Terbaru</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  
+    <!-- Status Bar (09:41, Icons, Battery) -->
+    <g id="StatusBar" transform="translate(0, 0)">
+      <rect width="390" height="44" fill="#000000" fill-opacity="0.3"/>
+      <!-- Time -->
+      <text x="32" y="28" fill="#FFFFFF" font-size="14" font-weight="600">09:41</text>
+      <!-- Dynamic Island / Notch Pill -->
+      <rect x="140" y="8" width="110" height="24" rx="12" fill="#000000"/>
+      <!-- Icons Right -->
+      <g transform="translate(315, 17)">
+        <!-- Signal -->
+        <rect x="0" y="8" width="3" height="4" fill="#FFFFFF"/>
+        <rect x="4" y="6" width="3" height="6" fill="#FFFFFF"/>
+        <rect x="8" y="3" width="3" height="9" fill="#FFFFFF"/>
+        <rect x="12" y="0" width="3" height="12" fill="#FFFFFF"/>
+        <!-- 5G / WiFi -->
+        <text x="20" y="10" fill="#FFFFFF" font-size="10" font-weight="bold">5G</text>
+        <!-- Battery -->
+        <rect x="40" y="1" width="20" height="10" rx="3" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
+        <rect x="42" y="3" width="14" height="6" rx="1.5" fill="#FFFFFF"/>
+      </g>
+    </g>
+    
+</svg>

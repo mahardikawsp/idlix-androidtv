@@ -214,27 +214,40 @@ export const apiRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =>
     return reply.status(result.status).send(result.data);
   });
 
-  // Redeem Play (Majorplay CDN)
-  fastify.post<{ Body: { url?: string; claim: string; mode?: string } }>(
-    '/api/watch/redeem',
-    async (req, reply) => {
-      const { url = 'https://e2e.majorplay.net/api/play', claim, mode = 'browser' } = req.body;
-      if (!claim) {
-        return reply.status(400).send({ error: 'claim is required' });
-      }
-
-      const result = await engine.executeFetch(url, {
-        method: 'POST',
-        body: { claim, mode },
-        headers: {
-          Referer: 'https://z2.idlixku.com/',
-          Origin: 'https://z2.idlixku.com',
-        },
-      });
-
-      return reply.status(result.status).send(result.data);
+  // Redeem Play (Majorplay CDN & Idlix Session Redeem)
+  const handleRedeem = async (req: any, reply: any) => {
+    const { url, claim, mode = 'browser' } = req.body || {};
+    if (!claim) {
+      return reply.status(400).send({ error: 'claim is required' });
     }
-  );
+
+    // Tentukan endpoint target:
+    // Provider IDLIX menggunakan endpoint /api/watch/session/redeem
+    let targetUrl = url || (req.url.includes('session/redeem') ? '/api/watch/session/redeem' : 'https://e2e.majorplay.net/api/play');
+    if (targetUrl.startsWith('/watch/')) {
+      targetUrl = `/api${targetUrl}`;
+    }
+
+    req.log.info({ targetUrl, mode }, '[handleRedeem] Forwarding redeem request');
+
+    const result = await engine.executeFetch(targetUrl, {
+      method: 'POST',
+      body: { claim, mode },
+      headers: {
+        Referer: 'https://z2.idlixku.com/',
+        Origin: 'https://z2.idlixku.com',
+      },
+    });
+
+    req.log.info({ status: result.status, hasUrl: !!result.data?.url }, '[handleRedeem] Redeem response');
+
+    return reply.status(result.status).send(result.data);
+  };
+
+  fastify.post('/api/watch/redeem', handleRedeem);
+  fastify.post('/watch/redeem', handleRedeem);
+  fastify.post('/watch/session/redeem', handleRedeem);
+  fastify.post('/api/watch/session/redeem', handleRedeem);
 
   // High-performance All-in-One Playback Resolver
   fastify.get<{

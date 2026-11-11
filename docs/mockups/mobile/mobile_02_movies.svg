@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" width="390" height="844" style="background:#141414;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="bgGradM" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141414"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="heroM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0.2"/>
+      <stop offset="60%" stop-color="#141414" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="posterM1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#7f1d1d"/></linearGradient>
+    <linearGradient id="posterM2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#78350f"/></linearGradient>
+    <linearGradient id="posterM3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e1b4b"/></linearGradient>
+    <linearGradient id="posterM4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#064e3b"/></linearGradient>
+    <linearGradient id="posterM5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#312e81"/></linearGradient>
+    <linearGradient id="posterM6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d48"/><stop offset="100%" stop-color="#881337"/></linearGradient>
+    <filter id="mShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    </defs>
+  <rect width="390" height="844" rx="40" fill="url(#bgGradM)"/>
+
+  <!-- Top Header Bar -->
+  <g transform="translate(16, 54)">
+    <text x="0" y="24" fill="#FFFFFF" font-size="22" font-weight="900">Film / Movies</text>
+    <g transform="translate(240, 4)">
+      <rect x="0" y="0" width="118" height="28" rx="14" fill="#252525" stroke="#444444"/>
+      <text x="50" y="18" fill="#CCCCCC" font-size="11" font-weight="bold" text-anchor="middle">Terpopuler ▼</text>
+    </g>
+  </g>
+
+  <!-- Filter Chip Row -->
+  <g transform="translate(16, 96)">
+    <rect x="0" y="0" width="68" height="28" rx="14" fill="#E50914"/>
+    <text x="34" y="18" fill="#FFFFFF" font-size="11" font-weight="bold" text-anchor="middle">Semua</text>
+
+    <rect x="76" y="0" width="56" height="28" rx="14" fill="#252525"/>
+    <text x="104" y="18" fill="#AAAAAA" font-size="11" text-anchor="middle">Aksi</text>
+
+    <rect x="140" y="0" width="60" height="28" rx="14" fill="#252525"/>
+    <text x="170" y="18" fill="#AAAAAA" font-size="11" text-anchor="middle">Horor</text>
+
+    <rect x="208" y="0" width="64" height="28" rx="14" fill="#252525"/>
+    <text x="240" y="18" fill="#AAAAAA" font-size="11" text-anchor="middle">Komedi</text>
+
+    <rect x="280" y="0" width="64" height="28" rx="14" fill="#252525"/>
+    <text x="312" y="18" fill="#AAAAAA" font-size="11" text-anchor="middle">Sci-Fi</text>
+  </g>
+
+  <!-- 3-Column Movie Grid -->
+  <g transform="translate(16, 140)">
+    <!-- Row 1 -->
+    <g>
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM2)" filter="url(#mShadow)"/>
+      <rect x="6" y="6" width="34" height="16" rx="3" fill="#000000" fill-opacity="0.8"/>
+      <text x="23" y="18" fill="#FFD700" font-size="9" font-weight="bold" text-anchor="middle">★ 8.6</text>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Dune: Part Two</text>
+    </g>
+
+    <g transform="translate(123, 0)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM1)" filter="url(#mShadow)"/>
+      <rect x="6" y="6" width="34" height="16" rx="3" fill="#000000" fill-opacity="0.8"/>
+      <text x="23" y="18" fill="#FFD700" font-size="9" font-weight="bold" text-anchor="middle">★ 8.2</text>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Deadpool 3</text>
+    </g>
+
+    <g transform="translate(246, 0)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM3)" filter="url(#mShadow)"/>
+      <rect x="6" y="6" width="34" height="16" rx="3" fill="#000000" fill-opacity="0.8"/>
+      <text x="23" y="18" fill="#FFD700" font-size="9" font-weight="bold" text-anchor="middle">★ 8.9</text>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Oppenheimer</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(0, 180)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM4)" filter="url(#mShadow)"/>
+      <rect x="6" y="6" width="34" height="16" rx="3" fill="#000000" fill-opacity="0.8"/>
+      <text x="23" y="18" fill="#FFD700" font-size="9" font-weight="bold" text-anchor="middle">★ 8.5</text>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">The Batman</text>
+    </g>
+
+    <g transform="translate(123, 180)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM5)" filter="url(#mShadow)"/>
+      <rect x="6" y="6" width="34" height="16" rx="3" fill="#000000" fill-opacity="0.8"/>
+      <text x="23" y="18" fill="#FFD700" font-size="9" font-weight="bold" text-anchor="middle">★ 8.7</text>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Interstellar</text>
+    </g>
+
+    <g transform="translate(246, 180)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM6)" filter="url(#mShadow)"/>
+      <rect x="6" y="6" width="34" height="16" rx="3" fill="#000000" fill-opacity="0.8"/>
+      <text x="23" y="18" fill="#FFD700" font-size="9" font-weight="bold" text-anchor="middle">★ 8.1</text>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Alien: Romulus</text>
+    </g>
+
+    <!-- Row 3 -->
+    <g transform="translate(0, 360)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM6)" filter="url(#mShadow)"/>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Agak Laen</text>
+    </g>
+    <g transform="translate(123, 360)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM2)" filter="url(#mShadow)"/>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Gladiator II</text>
+    </g>
+    <g transform="translate(246, 360)">
+      <rect x="0" y="0" width="112" height="160" rx="8" fill="url(#posterM3)" filter="url(#mShadow)"/>
+      <text x="4" y="152" fill="#FFFFFF" font-size="11" font-weight="bold">Venom 3</text>
+    </g>
+  </g>
+
+  <!-- Bottom Nav Bar (Film Selected - index 1) -->
+  
+    <!-- Bottom Navigation Bar (Material 3) -->
+    <g id="BottomNavBar" transform="translate(0, 764)">
+      <rect width="390" height="80" fill="#181818" stroke="#262626" stroke-width="1"/>
+    
+        <g transform="translate(39.0, 14)">
+          
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#8E8E93" transform="translate(-10, -2) scale(0.85)"/>
+          <text x="0" y="32" fill="#8E8E93" font-size="10" font-weight="500" text-anchor="middle">Beranda</text>
+        </g>
+        
+        <g transform="translate(117.0, 14)">
+          <rect x="-24" y="-4" width="48" height="26" rx="13" fill="#E50914" fill-opacity="0.18"/>
+          <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" fill="#E50914" transform="translate(-10, -2) scale(0.85)"/>
+          <text x="0" y="32" fill="#E50914" font-size="10" font-weight="bold" text-anchor="middle">Film</text>
+        </g>
+        
+        <g transform="translate(195.0, 14)">
+          
+          <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z" fill="#8E8E93" transform="translate(-10, -2) scale(0.85)"/>
+          <text x="0" y="32" fill="#8E8E93" font-size="10" font-weight="500" text-anchor="middle">Serial TV</text>
+        </g>
+        
+        <g transform="translate(273.0, 14)">
+          
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#8E8E93" transform="translate(-10, -2) scale(0.85)"/>
+          <text x="0" y="32" fill="#8E8E93" font-size="10" font-weight="500" text-anchor="middle">Cari</text>
+        </g>
+        
+        <g transform="translate(351.0, 14)">
+          
+          <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z" fill="#8E8E93" transform="translate(-10, -2) scale(0.85)"/>
+          <text x="0" y="32" fill="#8E8E93" font-size="10" font-weight="500" text-anchor="middle">Koleksi</text>
+        </g>
+        
+      <rect x="130" y="68" width="130" height="4" rx="2" fill="#555555"/>
+    </g>
+    
+  
+    <!-- Status Bar (09:41, Icons, Battery) -->
+    <g id="StatusBar" transform="translate(0, 0)">
+      <rect width="390" height="44" fill="#000000" fill-opacity="0.3"/>
+      <!-- Time -->
+      <text x="32" y="28" fill="#FFFFFF" font-size="14" font-weight="600">09:41</text>
+      <!-- Dynamic Island / Notch Pill -->
+      <rect x="140" y="8" width="110" height="24" rx="12" fill="#000000"/>
+      <!-- Icons Right -->
+      <g transform="translate(315, 17)">
+        <!-- Signal -->
+        <rect x="0" y="8" width="3" height="4" fill="#FFFFFF"/>
+        <rect x="4" y="6" width="3" height="6" fill="#FFFFFF"/>
+        <rect x="8" y="3" width="3" height="9" fill="#FFFFFF"/>
+        <rect x="12" y="0" width="3" height="12" fill="#FFFFFF"/>
+        <!-- 5G / WiFi -->
+        <text x="20" y="10" fill="#FFFFFF" font-size="10" font-weight="bold">5G</text>
+        <!-- Battery -->
+        <rect x="40" y="1" width="20" height="10" rx="3" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
+        <rect x="42" y="3" width="14" height="6" rx="1.5" fill="#FFFFFF"/>
+      </g>
+    </g>
+    
+</svg>

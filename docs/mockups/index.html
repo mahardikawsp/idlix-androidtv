@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDLIX UI Mockups Gallery (Android TV & Mobile)</title>
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --card-bg: #181818;
+      --border: #262626;
+      --accent: #E50914;
+      --text: #ffffff;
+      --text-dim: #8e8e93;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand h1 {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+    }
+    .badge {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+    }
+    .tab-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .tab-btn:hover:not(.active) {
+      border-color: #555;
+    }
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+    .grid-tv {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .grid-mobile {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .mockup-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .mockup-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .card-header {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: #141414;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .card-tag {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .card-body {
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #080808;
+    }
+    .card-body img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+    }
+    .card-footer {
+      padding: 10px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    .card-footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>IDLIX</h1>
+      <span class="badge">SVG Mockups Gallery</span>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tv')">📺 Android TV (8 Layar)</button>
+      <button class="tab-btn" onclick="switchTab('mobile')">📱 Android Mobile (7 Layar)</button>
+      <button class="tab-btn" onclick="switchTab('all')">Semua Tampilan</button>
+    </div>
+  </header>
+
+  <!-- TV SECTION -->
+  <div id="section-tv">
+    <h2 class="section-title">📺 Android TV Leanback Interface (16:9 Landscape)</h2>
+    <div class="grid-tv">
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">1. Beranda (Home Screen)</span><span class="card-tag">Billboard + Swimlanes</span></div>
+        <div class="card-body"><img src="tv/tv_01_home.svg" alt="TV Home"></div>
+        <div class="card-footer"><span>tv_01_home.svg</span><a href="tv/tv_01_home.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">2. Film (Movies Screen)</span><span class="card-tag">Filter Kategori + Populer</span></div>
+        <div class="card-body"><img src="tv/tv_02_movies.svg" alt="TV Movies"></div>
+        <div class="card-footer"><span>tv_02_movies.svg</span><a href="tv/tv_02_movies.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">3. Serial TV (Series Screen)</span><span class="card-tag">Season Info + K-Drama</span></div>
+        <div class="card-body"><img src="tv/tv_03_series.svg" alt="TV Series"></div>
+        <div class="card-footer"><span>tv_03_series.svg</span><a href="tv/tv_03_series.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">4. Pencarian (Search Screen)</span><span class="card-tag">D-Pad Grid + Focus Glow</span></div>
+        <div class="card-body"><img src="tv/tv_04_search.svg" alt="TV Search"></div>
+        <div class="card-footer"><span>tv_04_search.svg</span><a href="tv/tv_04_search.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">5. Lanjutkan Menonton (Riwayat)</span><span class="card-tag">Kartu 16:9 + Progress Bar</span></div>
+        <div class="card-body"><img src="tv/tv_05_continue_watching.svg" alt="TV History"></div>
+        <div class="card-footer"><span>tv_05_continue_watching.svg</span><a href="tv/tv_05_continue_watching.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">6. Detail Konten (Detail Screen)</span><span class="card-tag">Sinopsis, Cast & Rekomendasi</span></div>
+        <div class="card-body"><img src="tv/tv_06_detail.svg" alt="TV Detail"></div>
+        <div class="card-footer"><span>tv_06_detail.svg</span><a href="tv/tv_06_detail.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">7. Pemutar Video (Player Screen)</span><span class="card-tag">ExoPlayer + SubDL Modal</span></div>
+        <div class="card-body"><img src="tv/tv_07_player.svg" alt="TV Player"></div>
+        <div class="card-footer"><span>tv_07_player.svg</span><a href="tv/tv_07_player.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">8. Pengaturan (Settings Screen)</span><span class="card-tag">API Endpoint & Subtitle Style</span></div>
+        <div class="card-body"><img src="tv/tv_08_settings.svg" alt="TV Settings"></div>
+        <div class="card-footer"><span>tv_08_settings.svg</span><a href="tv/tv_08_settings.svg" target="_blank">Buka SVG</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE SECTION -->
+  <div id="section-mobile">
+    <h2 class="section-title">📱 Android Mobile Interface (Material 3 Portrait)</h2>
+    <div class="grid-mobile">
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">1. Beranda (Home)</span><span class="card-tag">Pager & Bottom Nav</span></div>
+        <div class="card-body"><img src="mobile/mobile_01_home.svg" alt="Mobile Home"></div>
+        <div class="card-footer"><span>mobile_01_home.svg</span><a href="mobile/mobile_01_home.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">2. Film (Movies)</span><span class="card-tag">3-Col Grid & Filters</span></div>
+        <div class="card-body"><img src="mobile/mobile_02_movies.svg" alt="Mobile Movies"></div>
+        <div class="card-footer"><span>mobile_02_movies.svg</span><a href="mobile/mobile_02_movies.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">3. Serial TV (Series)</span><span class="card-tag">Season Badges</span></div>
+        <div class="card-body"><img src="mobile/mobile_03_series.svg" alt="Mobile Series"></div>
+        <div class="card-footer"><span>mobile_03_series.svg</span><a href="mobile/mobile_03_series.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">4. Pencarian (Search)</span><span class="card-tag">Search Input & Tags</span></div>
+        <div class="card-body"><img src="mobile/mobile_04_search.svg" alt="Mobile Search"></div>
+        <div class="card-footer"><span>mobile_04_search.svg</span><a href="mobile/mobile_04_search.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">5. Koleksi (Library)</span><span class="card-tag">Watchlist & Riwayat</span></div>
+        <div class="card-body"><img src="mobile/mobile_05_library.svg" alt="Mobile Library"></div>
+        <div class="card-footer"><span>mobile_05_library.svg</span><a href="mobile/mobile_05_library.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">6. Detail & Player</span><span class="card-tag">Inline 16:9 Video</span></div>
+        <div class="card-body"><img src="mobile/mobile_06_detail_player.svg" alt="Mobile Detail"></div>
+        <div class="card-footer"><span>mobile_06_detail_player.svg</span><a href="mobile/mobile_06_detail_player.svg" target="_blank">Buka SVG</a></div>
+      </div>
+
+      <div class="mockup-card">
+        <div class="card-header"><span class="card-title">7. Pengaturan</span><span class="card-tag">API & PiP Toggle</span></div>
+        <div class="card-body"><img src="mobile/mobile_07_settings.svg" alt="Mobile Settings"></div>
+        <div class="card-footer"><span>mobile_07_settings.svg</span><a href="mobile/mobile_07_settings.svg" target="_blank">Buka SVG</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      const tv = document.getElementById('section-tv');
+      const mobile = document.getElementById('section-mobile');
+      if (tab === 'tv') {
+        tv.style.display = 'block';
+        mobile.style.display = 'none';
+      } else if (tab === 'mobile') {
+        tv.style.display = 'none';
+        mobile.style.display = 'block';
+      } else {
+        tv.style.display = 'block';
+        mobile.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
+

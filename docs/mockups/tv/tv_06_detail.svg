@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" style="background:#141414;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#181818"/>
+      <stop offset="100%" stop-color="#0e0e0e"/>
+    </linearGradient>
+    <linearGradient id="heroGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0.98"/>
+      <stop offset="40%" stop-color="#141414" stop-opacity="0.85"/>
+      <stop offset="70%" stop-color="#141414" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="heroBottomGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c2c2c"/>
+      <stop offset="100%" stop-color="#1c1c1c"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E50914"/>
+      <stop offset="100%" stop-color="#b81d24"/>
+    </linearGradient>
+    <linearGradient id="posterGrad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#451a03"/></linearGradient>
+    <linearGradient id="posterGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e1b4b"/></linearGradient>
+    <linearGradient id="posterGrad3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#581c87"/></linearGradient>
+    <linearGradient id="posterGrad4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#064e3b"/></linearGradient>
+    <linearGradient id="posterGrad5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#312e81"/></linearGradient>
+    <linearGradient id="posterGrad6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d48"/><stop offset="100%" stop-color="#881337"/></linearGradient>
+    <filter id="focusGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    </defs>
+  <rect width="1280" height="720" fill="url(#bgGrad)"/>
+
+  <!-- Immersive Cinematic Backdrop -->
+  <rect x="0" y="0" width="1280" height="420" fill="url(#posterGrad1)"/>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#heroGradient)"/>
+  <rect x="0" y="200" width="1280" height="520" fill="url(#heroBottomGrad)"/>
+
+  <g transform="translate(64, 40)">
+    <!-- Back to Catalog Indicator -->
+    <text x="30" y="0" fill="#AAAAAA" font-size="12">← Tekan [Back] untuk kembali ke Beranda</text>
+
+    <!-- Main Content Row -->
+    <g transform="translate(30, 20)">
+      <!-- Left: Big Poster Card -->
+      <g filter="url(#cardShadow)">
+        <rect x="0" y="0" width="220" height="320" rx="8" fill="url(#posterGrad1)" stroke="#333333" stroke-width="1"/>
+        <rect x="12" y="12" width="60" height="22" rx="4" fill="#E50914"/>
+        <text x="42" y="27" fill="#FFFFFF" font-size="11" font-weight="bold" text-anchor="middle">4K HDR</text>
+        <circle cx="110" cy="160" r="30" fill="#000000" fill-opacity="0.5"/>
+        <polygon points="104,146 104,174 122,160" fill="#FFFFFF"/>
+      </g>
+
+      <!-- Right: Detailed Synopsis & Metadata -->
+      <g transform="translate(250, 0)">
+        <text x="0" y="32" fill="#FFFFFF" font-size="38" font-weight="900">Dune: Part Two</text>
+        <text x="0" y="60" fill="#FFD700" font-size="14" font-weight="bold">★ 8.6 / 10  <tspan fill="#AAAAAA">| 2024 | 2j 46m | PG-13 | Ultra HD 1080p</tspan></text>
+        
+        <!-- Genre Pills -->
+        <g transform="translate(0, 75)">
+          <rect x="0" y="0" width="60" height="22" rx="4" fill="#252525"/>
+          <text x="30" y="15" fill="#CCCCCC" font-size="11" text-anchor="middle">Aksi</text>
+
+          <rect x="68" y="0" width="94" height="22" rx="4" fill="#252525"/>
+          <text x="115" y="15" fill="#CCCCCC" font-size="11" text-anchor="middle">Petualangan</text>
+
+          <rect x="170" y="0" width="68" height="22" rx="4" fill="#252525"/>
+          <text x="204" y="15" fill="#CCCCCC" font-size="11" text-anchor="middle">Sci-Fi</text>
+        </g>
+
+        <!-- Synopsis -->
+        <text x="0" y="124" fill="#DDDDDD" font-size="13">
+          Paul Atreides bergabung dengan Chani dan kaum Fremen saat merencanakan balas dendam terhadap
+        </text>
+        <text x="0" y="144" fill="#DDDDDD" font-size="13">
+          orang-orang yang menghancurkan keluarganya. Menghadapi pilihan antara cinta hidupnya dan nasib
+        </text>
+        <text x="0" y="164" fill="#DDDDDD" font-size="13">
+          alam semesta, ia berusaha mencegah masa depan mengerikan yang hanya ia yang bisa meramalkannya.
+        </text>
+
+        <!-- Action Buttons Row -->
+        <g transform="translate(0, 195)">
+          <!-- Focused Play Button -->
+          <g filter="url(#focusGlow)">
+            <rect x="0" y="0" width="160" height="44" rx="8" fill="#E50914"/>
+            <polygon points="24,15 24,29 36,22" fill="#FFFFFF"/>
+            <text x="46" y="27" fill="#FFFFFF" font-size="14" font-weight="bold">Putar Film</text>
+          </g>
+          <!-- Bookmark -->
+          <g transform="translate(175, 0)">
+            <rect x="0" y="0" width="160" height="44" rx="8" fill="#252525" stroke="#444444"/>
+            <text x="80" y="27" fill="#FFFFFF" font-size="13" font-weight="bold" text-anchor="middle">+ Tambah ke Koleksi</text>
+          </g>
+          <!-- Trailer -->
+          <g transform="translate(350, 0)">
+            <rect x="0" y="0" width="120" height="44" rx="8" fill="#252525" stroke="#444444"/>
+            <text x="60" y="27" fill="#FFFFFF" font-size="13" font-weight="bold" text-anchor="middle">Trailer</text>
+          </g>
+        </g>
+
+        <!-- Cast Row -->
+        <g transform="translate(0, 260)">
+          <text x="0" y="14" fill="#888888" font-size="12" font-weight="bold">PEMERAN UTAMA:</text>
+          <g transform="translate(0, 26)">
+            <!-- Cast 1 -->
+            <circle cx="18" cy="18" r="18" fill="#444444"/>
+            <text x="18" y="23" fill="#FFFFFF" font-size="11" font-weight="bold" text-anchor="middle">TC</text>
+            <text x="44" y="16" fill="#FFFFFF" font-size="12" font-weight="bold">Timothée Chalamet</text>
+            <text x="44" y="28" fill="#888888" font-size="10">Paul Atreides</text>
+
+            <!-- Cast 2 -->
+            <g transform="translate(190, 0)">
+              <circle cx="18" cy="18" r="18" fill="#555555"/>
+              <text x="18" y="23" fill="#FFFFFF" font-size="11" font-weight="bold" text-anchor="middle">ZD</text>
+              <text x="44" y="16" fill="#FFFFFF" font-size="12" font-weight="bold">Zendaya</text>
+              <text x="44" y="28" fill="#888888" font-size="10">Chani</text>
+            </g>
+
+            <!-- Cast 3 -->
+            <g transform="translate(340, 0)">
+              <circle cx="18" cy="18" r="18" fill="#666666"/>
+              <text x="18" y="23" fill="#FFFFFF" font-size="11" font-weight="bold" text-anchor="middle">RF</text>
+              <text x="44" y="16" fill="#FFFFFF" font-size="12" font-weight="bold">Rebecca Ferguson</text>
+              <text x="44" y="28" fill="#888888" font-size="10">Lady Jessica</text>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <!-- Episodes / Similar Movies Section -->
+    <g transform="translate(30, 420)">
+      <text x="0" y="0" fill="#FFFFFF" font-size="16" font-weight="bold">Rekomendasi Film Serupa</text>
+      <g transform="translate(0, 16)">
+        <g><rect x="0" y="0" width="170" height="180" rx="8" fill="url(#posterGrad2)"/><text x="10" y="168" fill="#FFFFFF" font-size="12" font-weight="bold">Dune (2021)</text></g>
+        <g transform="translate(190,0)"><rect x="0" y="0" width="170" height="180" rx="8" fill="url(#posterGrad3)"/><text x="10" y="168" fill="#FFFFFF" font-size="12" font-weight="bold">Blade Runner 2049</text></g>
+        <g transform="translate(380,0)"><rect x="0" y="0" width="170" height="180" rx="8" fill="url(#posterGrad4)"/><text x="10" y="168" fill="#FFFFFF" font-size="12" font-weight="bold">Interstellar</text></g>
+        <g transform="translate(570,0)"><rect x="0" y="0" width="170" height="180" rx="8" fill="url(#posterGrad5)"/><text x="10" y="168" fill="#FFFFFF" font-size="12" font-weight="bold">Arrival</text></g>
+        <g transform="translate(760,0)"><rect x="0" y="0" width="170" height="180" rx="8" fill="url(#posterGrad6)"/><text x="10" y="168" fill="#FFFFFF" font-size="12" font-weight="bold">The Creator</text></g>
+      </g>
+    </g>
+  </g>
+</svg>

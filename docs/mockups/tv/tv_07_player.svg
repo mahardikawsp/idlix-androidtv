@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" style="background:#000000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#181818"/>
+      <stop offset="100%" stop-color="#0e0e0e"/>
+    </linearGradient>
+    <linearGradient id="heroGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0.98"/>
+      <stop offset="40%" stop-color="#141414" stop-opacity="0.85"/>
+      <stop offset="70%" stop-color="#141414" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="heroBottomGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c2c2c"/>
+      <stop offset="100%" stop-color="#1c1c1c"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E50914"/>
+      <stop offset="100%" stop-color="#b81d24"/>
+    </linearGradient>
+    <linearGradient id="posterGrad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#451a03"/></linearGradient>
+    <linearGradient id="posterGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e1b4b"/></linearGradient>
+    <linearGradient id="posterGrad3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#581c87"/></linearGradient>
+    <linearGradient id="posterGrad4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#064e3b"/></linearGradient>
+    <linearGradient id="posterGrad5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#312e81"/></linearGradient>
+    <linearGradient id="posterGrad6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d48"/><stop offset="100%" stop-color="#881337"/></linearGradient>
+    <filter id="focusGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    </defs>
+
+  <!-- Video Scene Background (Cinematic Space/Sci-Fi) -->
+  <rect width="1280" height="720" fill="url(#posterGrad4)"/>
+  <circle cx="640" cy="300" r="180" fill="#047857" fill-opacity="0.3"/>
+  
+  <!-- Active Movie Subtitle in Screen Center-Bottom -->
+  <g transform="translate(640, 500)">
+    <rect x="-240" y="-18" width="480" height="36" rx="4" fill="#000000" fill-opacity="0.6"/>
+    <text x="0" y="7" fill="#FFFF00" font-size="20" font-weight="bold" text-anchor="middle">
+      "Kita harus mengamankan Sacred Timeline sebelum loom runtuh!"
+    </text>
+  </g>
+
+  <!-- HUD Dim Overlay -->
+  <rect width="1280" height="720" fill="#000000" fill-opacity="0.45"/>
+
+  <!-- Top Player Header Bar -->
+  <g transform="translate(48, 36)">
+    <text x="0" y="24" fill="#FFFFFF" font-size="22" font-weight="bold">Loki — S2 : E4 "Heart of the TVA"</text>
+    <g transform="translate(0, 36)">
+      <rect x="0" y="0" width="60" height="18" rx="3" fill="#E50914"/>
+      <text x="30" y="13" fill="#FFFFFF" font-size="10" font-weight="bold" text-anchor="middle">1080p FHD</text>
+      
+      <rect x="68" y="0" width="120" height="18" rx="3" fill="#252525"/>
+      <text x="128" y="13" fill="#22c55e" font-size="10" font-weight="bold" text-anchor="middle">🟢 Majorplay CDN</text>
+
+      <rect x="196" y="0" width="110" height="18" rx="3" fill="#252525"/>
+      <text x="251" y="13" fill="#FFD700" font-size="10" font-weight="bold" text-anchor="middle">💬 SubDL: Indonesia</text>
+    </g>
+  </g>
+
+  <!-- Center Play/Pause Indicator -->
+  <g transform="translate(640, 320)">
+    <circle cx="0" cy="0" r="40" fill="#000000" fill-opacity="0.7" stroke="#FFFFFF" stroke-width="2"/>
+    <rect x="-10" y="-16" width="7" height="32" rx="2" fill="#FFFFFF"/>
+    <rect x="3" y="-16" width="7" height="32" rx="2" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Subtitle Picker Quick Modal (Right side) -->
+  <g transform="translate(860, 160)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="370" height="360" rx="10" fill="#181818" stroke="#333333" stroke-width="1.5"/>
+    <!-- Modal Header -->
+    <rect x="0" y="0" width="370" height="50" rx="10" fill="#222222"/>
+    <text x="20" y="32" fill="#FFFFFF" font-size="15" font-weight="bold">Pilih Subtitle (SubDL &amp; Bawaan)</text>
+    
+    <!-- Option 1: Bawaan IDLIX (ID) -->
+    <g transform="translate(16, 65)">
+      <rect x="0" y="0" width="338" height="52" rx="6" fill="#262626"/>
+      <text x="14" y="24" fill="#FFFFFF" font-size="13" font-weight="bold">Indonesian (Internal IDLIX)</text>
+      <text x="14" y="40" fill="#AAAAAA" font-size="11">Trek Resmi HLS Master Stream</text>
+    </g>
+
+    <!-- Option 2: SubDL Indonesia (FOCUSED & ACTIVE) -->
+    <g transform="translate(16, 126)" filter="url(#focusGlow)">
+      <rect x="0" y="0" width="338" height="52" rx="6" fill="#E50914"/>
+      <text x="14" y="24" fill="#FFFFFF" font-size="13" font-weight="bold">Indonesian (SubDL Sync #1) ✓</text>
+      <text x="14" y="40" fill="#FFFFFF" font-size="11">Uploader: Pein Akatsuki • 99% Match</text>
+    </g>
+
+    <!-- Option 3: SubDL English -->
+    <g transform="translate(16, 187)">
+      <rect x="0" y="0" width="338" height="52" rx="6" fill="#262626"/>
+      <text x="14" y="24" fill="#FFFFFF" font-size="13" font-weight="bold">English (SubDL Sync #2)</text>
+      <text x="14" y="40" fill="#AAAAAA" font-size="11">SDH WebRip • 100% Match</text>
+    </g>
+
+    <!-- Option 4: Nonaktifkan Subtitle -->
+    <g transform="translate(16, 248)">
+      <rect x="0" y="0" width="338" height="44" rx="6" fill="#262626"/>
+      <text x="14" y="28" fill="#888888" font-size="13">Matikan Subtitle (Off)</text>
+    </g>
+
+    <text x="20" y="330" fill="#777777" font-size="11">Tekan [OK] pada remote untuk mengaktifkan subtitle</text>
+  </g>
+
+  <!-- Bottom Player Controls Bar -->
+  <g transform="translate(60, 580)">
+    <!-- Time Scrubber -->
+    <g transform="translate(0, 0)">
+      <text x="0" y="16" fill="#FFFFFF" font-size="13" font-weight="bold">34:18</text>
+      <!-- Timeline Bar -->
+      <g transform="translate(60, 8)">
+        <rect x="0" y="0" width="1040" height="6" rx="3" fill="#444444"/>
+        <rect x="0" y="0" width="720" height="6" rx="3" fill="#888888"/>
+        <rect x="0" y="0" width="670" height="6" rx="3" fill="#E50914"/>
+        <circle cx="670" cy="3" r="8" fill="#FFFFFF" filter="url(#focusGlow)"/>
+      </g>
+      <text x="1115" y="16" fill="#AAAAAA" font-size="13">52:45</text>
+    </g>
+
+    <!-- TV Control Buttons Row -->
+    <g transform="translate(0, 36)">
+      <!-- Prev Ep -->
+      <g transform="translate(20, 0)"><text x="0" y="24" fill="#AAAAAA" font-size="13">⏮ Eps Sebelumnya</text></g>
+      <!-- Rewind 10s -->
+      <g transform="translate(180, 0)"><text x="0" y="24" fill="#AAAAAA" font-size="13">⏪ -10s</text></g>
+      <!-- Pause (Focused button) -->
+      <g transform="translate(280, 0)" filter="url(#focusGlow)">
+        <rect x="0" y="0" width="110" height="38" rx="6" fill="#E50914"/>
+        <text x="55" y="24" fill="#FFFFFF" font-size="13" font-weight="bold" text-anchor="middle">⏸ Jeda</text>
+      </g>
+      <!-- Forward 10s -->
+      <g transform="translate(410, 0)"><text x="0" y="24" fill="#AAAAAA" font-size="13">⏩ +10s</text></g>
+      <!-- Next Ep -->
+      <g transform="translate(500, 0)"><text x="0" y="24" fill="#AAAAAA" font-size="13">⏭ Eps Berikutnya</text></g>
+
+      <!-- Right Tools -->
+      <g transform="translate(820, 0)">
+        <rect x="0" y="0" width="110" height="38" rx="6" fill="#262626" stroke="#444444"/>
+        <text x="55" y="24" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">💬 Subtitle</text>
+      </g>
+      <g transform="translate(940, 0)">
+        <rect x="0" y="0" width="120" height="38" rx="6" fill="#262626" stroke="#444444"/>
+        <text x="60" y="24" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">⚙ Kecepatan 1.0x</text>
+      </g>
+    </g>
+  </g>
+</svg>

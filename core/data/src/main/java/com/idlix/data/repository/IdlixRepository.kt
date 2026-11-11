@@ -338,17 +338,36 @@ class IdlixRepository(
             }
 
             // Redeem final HLS playback URL
-            val redeemUrl = claimRes.redeemUrl.ifBlank { "https://e2e.majorplay.net/api/play" }
+            val rawRedeemUrl = claimRes.redeemUrl.ifBlank { "https://e2e.majorplay.net/api/play" }
+            val redeemUrl = if (rawRedeemUrl.startsWith("/watch/")) {
+                "/api$rawRedeemUrl"
+            } else {
+                rawRedeemUrl
+            }
             val redeemRes = try {
                 majorplayApi.redeemPlay(
                     url = redeemUrl,
                     request = RedeemRequest(claim = claimRes.claim, mode = "browser")
                 )
             } catch (e: Exception) {
+                android.util.Log.e("IdlixRepository", "Redeem via $redeemUrl failed: ${e.message}", e)
                 null
             }
 
             if (redeemRes == null || redeemRes.url.isBlank()) {
+                // Secondary fallback: coba one-shot resolvePlayback dari backend jika redeem terputus
+                try {
+                    val fallbackResolved = idlixApi.resolvePlayback(
+                        contentType = targetType,
+                        contentId = targetId,
+                        contentTitle = contentTitle
+                    )
+                    if (fallbackResolved.hlsMasterUrl.isNotBlank()) {
+                        return@withContext Result.success(fallbackResolved)
+                    }
+                } catch (fbErr: Exception) {
+                    android.util.Log.e("IdlixRepository", "One-shot resolver fallback also failed: ${fbErr.message}")
+                }
                 return@withContext Result.failure(Exception("Gagal mengambil master playlist HLS."))
             }
 

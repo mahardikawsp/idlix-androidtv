@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" style="background:#141414;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#181818"/>
+      <stop offset="100%" stop-color="#0e0e0e"/>
+    </linearGradient>
+    <linearGradient id="heroGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0.98"/>
+      <stop offset="40%" stop-color="#141414" stop-opacity="0.85"/>
+      <stop offset="70%" stop-color="#141414" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="heroBottomGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141414" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c2c2c"/>
+      <stop offset="100%" stop-color="#1c1c1c"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E50914"/>
+      <stop offset="100%" stop-color="#b81d24"/>
+    </linearGradient>
+    <linearGradient id="posterGrad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#451a03"/></linearGradient>
+    <linearGradient id="posterGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e1b4b"/></linearGradient>
+    <linearGradient id="posterGrad3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#581c87"/></linearGradient>
+    <linearGradient id="posterGrad4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#064e3b"/></linearGradient>
+    <linearGradient id="posterGrad5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#312e81"/></linearGradient>
+    <linearGradient id="posterGrad6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d48"/><stop offset="100%" stop-color="#881337"/></linearGradient>
+    <filter id="focusGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    </defs>
+  <rect width="1280" height="720" fill="url(#bgGrad)"/>
+
+  <g transform="translate(64, 0)">
+    <!-- Header with Filter Chips -->
+    <g transform="translate(48, 28)">
+      <text x="0" y="24" fill="#FFFFFF" font-size="24" font-weight="900" letter-spacing="0.5">Film / Movies</text>
+      
+      <!-- Filter Chips Row -->
+      <g transform="translate(220, 2)">
+        <rect x="0" y="0" width="76" height="30" rx="15" fill="#E50914"/>
+        <text x="38" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">Semua</text>
+
+        <rect x="88" y="0" width="70" height="30" rx="15" fill="#262626"/>
+        <text x="123" y="20" fill="#AAAAAA" font-size="12" text-anchor="middle">Aksi</text>
+
+        <rect x="170" y="0" width="70" height="30" rx="15" fill="#262626"/>
+        <text x="205" y="20" fill="#AAAAAA" font-size="12" text-anchor="middle">Horor</text>
+
+        <rect x="252" y="0" width="76" height="30" rx="15" fill="#262626"/>
+        <text x="290" y="20" fill="#AAAAAA" font-size="12" text-anchor="middle">Komedi</text>
+
+        <rect x="340" y="0" width="74" height="30" rx="15" fill="#262626"/>
+        <text x="377" y="20" fill="#AAAAAA" font-size="12" text-anchor="middle">Sci-Fi</text>
+
+        <rect x="426" y="0" width="74" height="30" rx="15" fill="#262626"/>
+        <text x="463" y="20" fill="#AAAAAA" font-size="12" text-anchor="middle">Drama</text>
+      </g>
+    </g>
+
+    <!-- Featured Billboard Mini -->
+    <g transform="translate(48, 80)">
+      <rect x="0" y="0" width="1120" height="240" rx="10" fill="url(#posterGrad3)" filter="url(#cardShadow)"/>
+      <rect x="0" y="0" width="1120" height="240" rx="10" fill="url(#heroGradient)"/>
+      <g transform="translate(36, 40)">
+        <rect x="0" y="0" width="80" height="20" rx="3" fill="#E50914"/>
+        <text x="40" y="14" fill="#FFFFFF" font-size="10" font-weight="bold" text-anchor="middle">TERPOPULER</text>
+        <text x="0" y="60" fill="#FFFFFF" font-size="34" font-weight="900">OPPENHEIMER</text>
+        <text x="0" y="85" fill="#FFD700" font-size="13" font-weight="bold">★ 8.9  <tspan fill="#AAAAAA">| 2023 | 3j 00m | Biografi • Drama • Sejarah</tspan></text>
+        <text x="0" y="115" fill="#DDDDDD" font-size="12">Kisah fisikawan J. Robert Oppenheimer dan perannya dalam proyek Manhattan penciptaan bom atom.</text>
+        <g transform="translate(0, 140)">
+          <rect x="0" y="0" width="120" height="36" rx="6" fill="#E50914"/>
+          <text x="60" y="23" fill="#FFFFFF" font-size="13" font-weight="bold" text-anchor="middle">▶ Putar Film</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Swimlane 1: Film Terpopuler Indonesia -->
+    <g transform="translate(48, 345)">
+      <text x="0" y="0" fill="#FFFFFF" font-size="16" font-weight="bold">Film Populer di Indonesia</text>
+      <g transform="translate(0, 16)">
+        <g><rect x="0" y="0" width="140" height="155" rx="6" fill="url(#posterGrad1)"/><text x="6" y="145" fill="#FFFFFF" font-size="11" font-weight="bold">Agak Laen</text></g>
+        <g transform="translate(155,0)"><rect x="0" y="0" width="140" height="155" rx="6" fill="url(#posterGrad6)"/><text x="6" y="145" fill="#FFFFFF" font-size="11" font-weight="bold">Vina: Sebelum 7 Hari</text></g>
+        <g transform="translate(310,0)"><rect x="0" y="0" width="140" height="155" rx="6" fill="url(#posterGrad5)"/><text x="6" y="145" fill="#FFFFFF" font-size="11" font-weight="bold">Siksa Kubur</text></g>
+        <g transform="translate(465,0)"><rect x="0" y="0" width="140" height="155" rx="6" fill="url(#posterGrad2)"/><text x="6" y="145" fill="#FFFFFF" font-size="11" font-weight="bold">Badarawuhi di Desa Penari</text></g>
+        <g transform="translate(620,0)"><rect x="0" y="0" width="140" height="155" rx="6" fill="url(#posterGrad4)"/><text x="6" y="145" fill="#FFFFFF" font-size="11" font-weight="bold">Sekawan Limo</text></g>
+        <g transform="translate(775,0)"><rect x="0" y="0" width="140" height="155" rx="6" fill="url(#posterGrad3)"/><text x="6" y="145" fill="#FFFFFF" font-size="11" font-weight="bold">Ipar Adalah Maut</text></g>
+      </g>
+    </g>
+
+    <!-- Swimlane 2: Film Hollywood & Box Office -->
+    <g transform="translate(48, 540)">
+      <text x="0" y="0" fill="#FFFFFF" font-size="16" font-weight="bold">Rilis Box Office Terbaru</text>
+      <g transform="translate(0, 14)">
+        <g><rect x="0" y="0" width="140" height="140" rx="6" fill="url(#posterGrad4)"/><text x="6" y="130" fill="#FFFFFF" font-size="11" font-weight="bold">Joker: Folie à Deux</text></g>
+        <g transform="translate(155,0)"><rect x="0" y="0" width="140" height="140" rx="6" fill="url(#posterGrad2)"/><text x="6" y="130" fill="#FFFFFF" font-size="11" font-weight="bold">Venom: The Last Dance</text></g>
+        <g transform="translate(310,0)"><rect x="0" y="0" width="140" height="140" rx="6" fill="url(#posterGrad3)"/><text x="6" y="130" fill="#FFFFFF" font-size="11" font-weight="bold">Transformers One</text></g>
+        <g transform="translate(465,0)"><rect x="0" y="0" width="140" height="140" rx="6" fill="url(#posterGrad1)"/><text x="6" y="130" fill="#FFFFFF" font-size="11" font-weight="bold">Beetlejuice Beetlejuice</text></g>
+        <g transform="translate(620,0)"><rect x="0" y="0" width="140" height="140" rx="6" fill="url(#posterGrad5)"/><text x="6" y="130" fill="#FFFFFF" font-size="11" font-weight="bold">Smile 2</text></g>
+        <g transform="translate(775,0)"><rect x="0" y="0" width="140" height="140" rx="6" fill="url(#posterGrad6)"/><text x="6" y="130" fill="#FFFFFF" font-size="11" font-weight="bold">The Substance</text></g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Left Navigation Drawer (Film selected - index 3) -->
+  
+    <g id="TvNavDrawer">
+      <rect x="0" y="0" width="64" height="720" fill="#141414" fill-opacity="0.96" filter="url(#cardShadow)"/>
+      <line x1="64" y1="0" x2="64" y2="720" stroke="#252525" stroke-width="1"/>
+      
+      <!-- Brand Logo -->
+      <g transform="translate(14, 28)">
+        <text x="0" y="20" fill="#E50914" font-size="20" font-weight="900" letter-spacing="1">IDLIX</text>
+        
+      </g>
+    
+        <g transform="translate(10, 86)">
+          <rect x="0" y="0" width="44" height="42" rx="8" fill="transparent" />
+          <g transform="translate(11, 9)">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#888888"/>
+          </g>
+          
+        </g>
+        
+        <g transform="translate(10, 140)">
+          <rect x="0" y="0" width="44" height="42" rx="8" fill="transparent" />
+          <g transform="translate(11, 9)">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#888888"/>
+          </g>
+          
+        </g>
+        
+        <g transform="translate(10, 194)">
+          <rect x="0" y="0" width="44" height="42" rx="8" fill="transparent" />
+          <g transform="translate(11, 9)">
+            <path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" fill="#888888"/>
+          </g>
+          
+        </g>
+        
+        <g transform="translate(10, 248)">
+          <rect x="0" y="0" width="44" height="42" rx="8" fill="#E50914" filter="url(#focusGlow)"/>
+          <g transform="translate(11, 9)">
+            <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" fill="#FFFFFF"/>
+          </g>
+          
+        </g>
+        
+        <g transform="translate(10, 302)">
+          <rect x="0" y="0" width="44" height="42" rx="8" fill="transparent" />
+          <g transform="translate(11, 9)">
+            <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z" fill="#888888"/>
+          </g>
+          
+        </g>
+        
+        <g transform="translate(10, 356)">
+          <rect x="0" y="0" width="44" height="42" rx="8" fill="transparent" />
+          <g transform="translate(11, 9)">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="#888888"/>
+          </g>
+          
+        </g>
+        </g>
+</svg>

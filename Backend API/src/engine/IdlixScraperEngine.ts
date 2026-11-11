@@ -443,20 +443,66 @@ export class IdlixScraperEngine {
       throw new Error('Failed to claim playback session from provider');
     }
 
-    // Step 4: Redeem HLS master playlist from Majorplay CDN
-    const redeemUrl = claimRes.redeemUrl || 'https://e2e.majorplay.net/api/play';
+    console.log('[ScraperEngine] Successfully claimed session:', {
+      kind: claimRes.kind,
+      claimPreview: claimRes.claim?.substring(0, 30) + '...',
+      redeemUrl: claimRes.redeemUrl,
+    });
+
+    // Step 4: Redeem HLS master playlist
+    // Pentos / Majorplay redeem URL
+    let redeemUrl = claimRes.redeemUrl || 'https://e2e.majorplay.net/api/play';
+    if (redeemUrl.startsWith('/watch/')) {
+      redeemUrl = `/api${redeemUrl}`;
+    }
+    const redeemHeaders: Record<string, string> = {
+      Referer: `${this.baseUrl}/`,
+      Origin: this.baseUrl,
+    };
+    if (didCookie) {
+      redeemHeaders['Cookie'] = didCookie;
+    }
+
+    console.log(`[ScraperEngine] Redeeming playback from ${redeemUrl}...`);
     const redeemResp = await this.executeFetch(redeemUrl, {
       method: 'POST',
       body: { claim: claimRes.claim, mode: 'browser' },
-      headers: {
-        Referer: `${this.baseUrl}/`,
-        Origin: this.baseUrl,
-      },
+      headers: redeemHeaders,
     });
 
-    const redeemData = redeemResp.data;
+    console.log('[ScraperEngine] Redeem response:', {
+      status: redeemResp.status,
+      data: redeemResp.data,
+    });
+
+    let redeemData = redeemResp.data;
+
+    // Jika redeem ke claimRes.redeemUrl gagal, fallback ke Majorplay CDN default
+    if (!redeemData?.url && redeemUrl !== 'https://e2e.majorplay.net/api/play') {
+      console.log('[ScraperEngine] Primary redeemUrl did not return URL, falling back to Majorplay CDN...');
+      try {
+        const cdnResp = await this.executeFetch('https://e2e.majorplay.net/api/play', {
+          method: 'POST',
+          body: { claim: claimRes.claim, mode: 'browser' },
+          headers: {
+            Referer: `${this.baseUrl}/`,
+            Origin: this.baseUrl,
+          },
+        });
+        console.log('[ScraperEngine] CDN Fallback response:', {
+          status: cdnResp.status,
+          data: cdnResp.data,
+        });
+        if (cdnResp.data?.url) {
+          redeemData = cdnResp.data;
+        }
+      } catch (cdnErr: any) {
+        console.warn('[ScraperEngine] CDN Fallback failed:', cdnErr?.message);
+      }
+    }
+
     if (!redeemData?.url) {
-      throw new Error('Failed to redeem HLS master playlist URL');
+      throw new Error(`Failed to redeem HLS master playlist URL: ${JSON.stringify(redeemResp.data)}`);
     }
 
     return {
