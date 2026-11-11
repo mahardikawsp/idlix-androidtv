@@ -15,14 +15,11 @@ FROM node:22-slim
 # Install required system dependencies for headless Chrome execution + unzip
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-<<<<<<< HEAD
       unzip \
       curl \
       ca-certificates \
-=======
       chromium \
       xvfb \
->>>>>>> 0393ec3 (impr: migrate scraper engine to puppeteer-real-browser for Turnstile bypass)
       fonts-liberation \
       fonts-noto-color-emoji \
       libasound2 \
