@@ -15,8 +15,11 @@
     "fastify": "^5.12.7",
     "lru-cache": "^11.0.2",
     "puppeteer": "^25.16.0",
+<<<<<<< HEAD
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+=======
+>>>>>>> 0393ec3 (impr: migrate scraper engine to puppeteer-real-browser for Turnstile bypass)
     "puppeteer-real-browser": "^1.4.4"
   },
   "devDependencies": {

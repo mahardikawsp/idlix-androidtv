@@ -1,10 +1,4 @@
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { Browser, Page } from 'puppeteer';
-
-// Add stealth plugin to evade bot/Cloudflare detection
-const puppeteerInstance = (puppeteer as any).default || puppeteer;
-puppeteerInstance.use(StealthPlugin());
+import { connect } from 'puppeteer-real-browser';
 
 export interface ResolvedPlaybackResult {
   title: string;
@@ -16,8 +10,8 @@ export interface ResolvedPlaybackResult {
 
 export class IdlixScraperEngine {
   private static instance: IdlixScraperEngine | null = null;
-  private browser: Browser | null = null;
-  private page: Page | null = null;
+  private browser: any = null;
+  private page: any = null;
   private isReady = false;
   private initPromise: Promise<void> | null = null;
   private baseUrl = process.env.IDLIX_BASE_URL || 'https://z2.idlixku.com';
@@ -47,14 +41,22 @@ export class IdlixScraperEngine {
     }
 
     this.initPromise = (async () => {
-      console.log(`[ScraperEngine] Launching stealth browser to bypass Cloudflare at ${this.baseUrl}...`);
+      console.log(`[ScraperEngine] Launching real-browser stealth engine for Cloudflare bypass at ${this.baseUrl}...`);
       try {
+<<<<<<< HEAD
         const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || undefined;
         const proxyArg = process.env.PROXY_SERVER ? [`--proxy-server=${process.env.PROXY_SERVER}`] : [];
 
         this.browser = await (puppeteerInstance as any).launch({
           headless: true,
           executablePath,
+=======
+        // Option A: puppeteer-real-browser with Xvfb virtual display on Linux VPS
+        const realBrowser = await (connect as any)({
+          headless: false,
+          turnstile: true,
+          disableXvfb: process.platform !== 'linux',
+>>>>>>> 0393ec3 (impr: migrate scraper engine to puppeteer-real-browser for Turnstile bypass)
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -64,9 +66,13 @@ export class IdlixScraperEngine {
             '--disable-accelerated-2d-canvas',
             '--no-first-run',
             '--no-zygote',
+<<<<<<< HEAD
             '--disable-extensions',
             '--disable-blink-features=AutomationControlled',
             '--window-size=800,600',
+=======
+            '--window-size=1920,1080',
+>>>>>>> 0393ec3 (impr: migrate scraper engine to puppeteer-real-browser for Turnstile bypass)
             '--lang=id-ID,id,en-US,en',
             // --- Optimasi CPU & Memory untuk Server 2-Core 8GB ---
             '--renderer-process-limit=1', // Batasi hanya 1 proses renderer agar tidak memakan kedua core
@@ -85,25 +91,30 @@ export class IdlixScraperEngine {
           ],
         });
 
-        const pages = await this.browser!.pages();
-        this.page = pages.length > 0 ? pages[0] : await this.browser!.newPage();
+        this.browser = realBrowser.browser;
+        this.page = realBrowser.page;
 
+<<<<<<< HEAD
         // Resolusi 800x600 memangkas beban CPU rasterizer hingga >70% dibanding 1920x1080
         await this.page.setViewport({ width: 800, height: 600 });
+=======
+        // Block heavy external ads only, never block challenge resources
+        try {
+          await this.page.setRequestInterception(true);
+          this.page.on('request', (req: any) => {
+            const url = req.url();
+            const adBlock = ['xyzchat', 'doubleclick', 'google-analytics', 'analytics.google.com'];
+>>>>>>> 0393ec3 (impr: migrate scraper engine to puppeteer-real-browser for Turnstile bypass)
 
-        // Advanced stealth: mask navigator.webdriver and chrome runtime signatures
-        await this.page.evaluateOnNewDocument(() => {
-          Object.defineProperty(navigator, 'webdriver', {
-            get: () => undefined,
+            if (adBlock.some((d) => url.includes(d))) {
+              req.abort();
+            } else {
+              req.continue();
+            }
           });
-          (window as any).chrome = {
-            runtime: {},
-            loadTimes: () => {},
-            csi: () => {},
-            app: {},
-          };
-        });
+        } catch (_) {}
 
+<<<<<<< HEAD
         await this.page.setUserAgent(
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
         );
@@ -140,11 +151,15 @@ export class IdlixScraperEngine {
         });
 
         console.log(`[ScraperEngine] Navigating to ${this.baseUrl} to solve challenge...`);
+=======
+        console.log(`[ScraperEngine] Navigating to ${this.baseUrl} to solve Cloudflare challenge...`);
+>>>>>>> 0393ec3 (impr: migrate scraper engine to puppeteer-real-browser for Turnstile bypass)
         await this.page.goto(this.baseUrl, {
           waitUntil: 'domcontentloaded',
-          timeout: 45000,
+          timeout: 60000,
         });
 
+<<<<<<< HEAD
         // Cloudflare Turnstile detection & auto-solving
         const isChallengeActive = async () => {
           try {
@@ -183,12 +198,15 @@ export class IdlixScraperEngine {
         }
 
         // Wait until Cloudflare challenge passes
+=======
+        console.log('[ScraperEngine] Waiting for Cloudflare Turnstile verification...');
+>>>>>>> 0393ec3 (impr: migrate scraper engine to puppeteer-real-browser for Turnstile bypass)
         await this.page.waitForFunction(
           () => {
             const title = document.title.toLowerCase();
             return !title.includes('just a moment') && !title.includes('attention required');
           },
-          { timeout: 35000 }
+          { timeout: 45000 }
         );
 
         console.log(`[ScraperEngine] Cloudflare challenge bypassed successfully! Page Title: "${await this.page.title()}"`);
@@ -294,7 +312,12 @@ export class IdlixScraperEngine {
 
     try {
       const result = await this.page.evaluate(
-        async (fetchUrl, fetchMethod, fetchBody, fetchHeaders) => {
+        async (
+          fetchUrl: string,
+          fetchMethod: string,
+          fetchBody: any,
+          fetchHeaders: Record<string, string>
+        ) => {
           try {
             const res = await fetch(fetchUrl, {
               method: fetchMethod,
